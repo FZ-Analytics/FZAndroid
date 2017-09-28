@@ -10,9 +10,9 @@ import java.util.List;
  */
 
 public class UploadHolder {
-    private AllUploadData UploadData;
+    private List<UploadPlanData> UploadData;
 
-    public UploadHolder(AllUploadData uploadData) {
+    public UploadHolder(List<UploadPlanData> uploadData) {
         UploadData = uploadData;
     }
 }

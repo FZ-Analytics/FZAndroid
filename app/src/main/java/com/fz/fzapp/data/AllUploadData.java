@@ -1,5 +1,9 @@
 package com.fz.fzapp.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +11,8 @@ import java.util.List;
  */
 
 public class AllUploadData {
-    private List<UploadPlanData> UploadData;
+    private static List<UploadPlanData> UploadData;
+    private UploadPlanData Datanya;
 
     public List<UploadPlanData> getUploadData() {
         return UploadData;
@@ -17,19 +22,30 @@ public class AllUploadData {
         UploadData = uploadData;
     }
 
-    private static AllUploadData AllUploadDataInstance = new AllUploadData();
+    public UploadPlanData getDatanya() {
+        return Datanya;
+    }
+
+    public void setDatanya(UploadPlanData datanya) {
+        Datanya = datanya;
+        UploadData.add(Datanya);
+    }
+
+    private static AllUploadData UserInstance = new AllUploadData();
 
     public static AllUploadData getInstance()
     {
-        return AllUploadDataInstance;
+        return UserInstance;
     }
 
     private AllUploadData()
     {
     }
 
-    public static void initAllUploadData()
+    public static void initUser()
     {
-        AllUploadDataInstance = new AllUploadData();
+        UploadData = new ArrayList<>();
+        UserInstance = new AllUploadData();
     }
+
 }

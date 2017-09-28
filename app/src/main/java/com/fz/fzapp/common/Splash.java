@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import com.fz.fzapp.R;
+import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.User;
 import com.fz.fzapp.utils.FixValue;
 

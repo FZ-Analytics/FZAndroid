@@ -84,14 +84,10 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     LinearLayout borderLayout2;
 
     private PopupMessege popupMessege = new PopupMessege();
-    static ProgressDialog progressDialog;
 
     private Activity activity = this;
     static String TAG = "[DutyData]";
     private Context context = this;
-    private Integer intDutyTask;
-//  private CountDownClass CountingTimer;
-
     private SimpleDateFormat tf, df;
     private Calendar calendar;
     private String strEstTime;
@@ -109,6 +105,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     long timeSwap = 0L;
     long finalTime = 0L;
     int countingArray;
+    int getReasonId;
     private Handler myHandler = new Handler();
     SimpleDateFormat form;
 
@@ -123,7 +120,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
-        parameterUpload();
         RetriveContent();
 //    StartDutyCheck();
 //
@@ -137,10 +133,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         TimerToTrackLocation.cancel();
     }
 
-    private void parameterUpload() {
-
-
-    }
 
     private void RetriveContent() {
         calendar = Calendar.getInstance();
@@ -152,21 +144,11 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         String StartDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getFrom();
         String DestinationDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getBlocks();
         String timeEnd = AllFunction.getTime(timeEstimateDutty);
+        AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualStart);
         try {
             Date startTime = form.parse(form.format(calendar.getTime()));
-            Calendar c = Calendar.getInstance();
-            System.out.println("Current time =&gt; " + c.getTime());
-
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String formattedDate = df.format(c.getTime());
-            // Now formattedDate have current date/time
-            String getTime = AllFunction.getTime(formattedDate);
-            String getDate = AllFunction.getDate(formattedDate);
-            String SaveTime = getDate + " " + getTime;
-            AllFunction.storeToSharedPref(context, SaveTime, Preference.prefActualStart);
             Date endTime = form.parse(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd());
             diff = endTime.getTime() - startTime.getTime();
-//
             if (diff < 0) {
 
                 countingUpTimer(diff);
@@ -186,7 +168,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                         countingUpTimer(finalDiff);
                     }
                 }.start();
-
             }
 
         } catch (Exception e) {
@@ -236,24 +217,15 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         moveTaskToBack(true);
     }
 
-    //
     @OnClick({R.id.btnDutyDone, R.id.btnDutyFails})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnDutyFails:
-                ArrayList<uploadData> wrapperUpdate = getData();
-
+                getReasonId = 1;
+                AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                //Keluar dari job
+                AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
                 onDuty = 1;
-                Date EndTime = null;
-                try {
-                    EndTime = form.parse(form.format(calendar.getTime()));
-//                    String getTime = AllFunction.getTimes(EndTime.toString());
-//                    String getDate = AllFunction.getDates(EndTime.toString());
-//                    String saveEndTime = getDate + " " + getTime;
-//                    AllFunction.storeToSharedPref(context, saveEndTime, Preference.prefActualEnd);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 Intent ReasonIntent = new Intent(Duty.this, Reason.class);
                 ReasonIntent.putExtra("onDuty", onDuty);
                 ReasonIntent.putExtra("onActivityJump", onActivityJump);
@@ -261,40 +233,29 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 finish();
                 break;
             case R.id.btnDutyDone:
-//                Date startTime = form.parse(form.format(calendar.getTime()));
-                Calendar c = Calendar.getInstance();
-                System.out.println("Current time =&gt; " + c.getTime());
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String formattedDate = df.format(c.getTime());
-                // Now formattedDate have current date/time
-                String getTime = AllFunction.getTime(formattedDate);
-                String getDate = AllFunction.getDate(formattedDate);
-                String SaveTime = getDate + " " + getTime;
-                AllFunction.storeToSharedPref(context, SaveTime, Preference.prefActualEnd);
-
-
+                AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
                 if (onDuty != 2) {
-
+                    getReasonId = 0;
+                    //Telat
                     if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
-                        ArrayList<uploadData> wrapperUpdated = getData();
+                        AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                        //Success and once job
                         popupMessege.ShowMessege1(context, "upload");
-                        uploadSync();
-                        Intent SyncIntent = new Intent(context, SyncData.class);
-                        context.startActivity(SyncIntent);
-                        activity.finish();
-                    } else {
-                        ArrayList<uploadData> wrapperUpdates = getData();
-                        uploadSync();
+                        AllFunction.uploadSync(0,context);
+                        getUpload();
 
+                    } else {
+                        //Succses and half job
+                        AllFunction.uploadSync(0,context);
                         AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
                         Intent planningIntent = new Intent(Duty.this, Planning.class);
                         startActivity(planningIntent);
                         finish();
                     }
-
                 } else {
-//                    ArrayList<uploadData> wrapperUpdates =getData();
-                    uploadSync();
+                    getReasonId = 2;
+                    AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                    //Late
                     AllFunction.getIntFromSharedPref(context, Preference.prefJobID);
                     Intent ReasonIntents = new Intent(Duty.this, Reason.class);
                     ReasonIntents.putExtra("onActivityJump", onActivityJump);
@@ -303,67 +264,56 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     finish();
                 }
                 break;
-
-
-////        calendar = Calendar.getInstance();
-////        tvActTime.setText(context.getString(R.string.strStartFinish, tf.format(calendar.getTime())));
-//
-//        if(onDuty == 3)
-//        {
-//          SaveToSQLite saveToSQLite = new SaveToSQLite(context.getResources().getString(R.string.strOnSchedule), activity, context, onDuty);
-//          saveToSQLite.ProcessToSQLite();
-//        }else
-//        {
-//          Intent ReasonIntent = new Intent(Duty.this, Reason.class);
-//          ReasonIntent.putExtra("onDuty", onDuty);
-//          startActivity(ReasonIntent);
-//          finish();
-//        }
         }
     }
+////    public void uploadSync() {
+////        UploadPlanData uploadPlanData = new UploadPlanData();
+////        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(context, Preference.prefJobID));
+////        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(context, Preference.prefTaskID));
+////        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(context, Preference.prefActualStart));
+////        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(context, Preference.prefActualEnd));
+////        uploadPlanData.setReasonState(0);
+////        uploadPlanData.setReasonID(0);
+////        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(context, Preference.prefDoneStatus));
+////
+////        AllUploadData.getInstance().setDatanya(uploadPlanData);
+//
+///*
+//        List<UploadPlanData> lstUpload = new ArrayList<>();
+//        lstUpload.add(uploadPlanData);
+//
+//        AllUploadData.getInstance().setUploadData(lstUpload);
+//
+//        UploadHolder uploadHolder = new UploadHolder(uploadPlanData);
+//        Log.d(TAG, "uploadSync: " + AllUploadData.getInstance().getUploadData().size());
+//
+//        getUpload(uploadHolder);
+//*/
+//    }
+    public void getUpload() {
+        UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+        if (CheckConnection() == -1) return;
+        DataLink dataLink = AllFunction.BindingData();
+        final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);
+        ReceiveUpload.enqueue(new Callback<UploadPojo>() {
+            @Override
+            public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
+                if (response.isSuccessful()) {
+                    Intent SyncIntent = new Intent(context, SyncData.class);
+                    context.startActivity(SyncIntent);
+                    activity.finish();
+                } else {
+                    Toast.makeText(context, "Check Your Connection", Toast.LENGTH_LONG).show();
+//                    setAllOff(context.getResources().getString(R.string.msgServerData));
+                }
+            }
+            @Override
+            public void onFailure(Call<UploadPojo> call, Throwable t) {
 
-    public void uploadSync() {
-        UploadPlanData uploadPlanData = new UploadPlanData();
-        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(context, Preference.prefJobID));
-        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(context, Preference.prefTaskID));
-        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(context, Preference.prefActualStart));
-        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(context, Preference.prefActualEnd));
-        uploadPlanData.setReasonState(0);
-        uploadPlanData.setReasonID(0);
-        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(context, Preference.prefDoneStatus));
-        List<UploadPlanData> lstUpload = new ArrayList<>();
-        lstUpload.add(uploadPlanData);
-        AllUploadData.getInstance().setUploadData(lstUpload);
-        UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance());
-        Log.d(TAG, "uploadSync: " + AllUploadData.getInstance().getUploadData().size());
-
-//        getUpload(AllUploadData.getInstance());
+            }
+        });
     }
 
-//    public void getUpload(AllUploadData uploadHolder) {
-//        if (CheckConnection() == -1) return;
-//        DataLink dataLink = AllFunction.BindingData();
-////        final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);
-////        ReceiveUpload.enqueue(new Callback<UploadPojo>() {
-//            @Override
-//            public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
-//                if (response.isSuccessful()) {
-//                    String msg = response.body().getCoreResponse().getMsg();
-//                    Toast.makeText(context,"Alhamdullillah",Toast.LENGTH_LONG).show();
-//                } else {
-//                    setAllOff(context.getResources().getString(R.string.msgServerData));
-//                    Toast.makeText(context,"Masih ru",Toast.LENGTH_LONG).show();
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<UploadPojo> call, Throwable t) {
-//
-//            }
-//        });
-//        String s;
-//    }
     private Integer CheckConnection() {
         if (AllFunction.isNetworkAvailable(context) == FixValue.TYPE_NONE) {
             setAllOff(context.getResources().getString(R.string.msgServerResponse));
@@ -371,10 +321,24 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         }
         return 0;
     }
+
     private void setAllOff(String strMsg) {
 ////            tvMsg.setText(context.getResources().getString(R.string.titleKlik));
 //            ivGo.setBackgroundResource(R.drawable.buttonthick);
         popupMessege.ShowMessege1(context, strMsg);
+    }
+
+    private String curentTime() {
+        String curentTime = null;
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time =&gt; " + c.getTime());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        // Now formattedDate have current date/time
+        String getTime = AllFunction.getTime(formattedDate);
+        String getDate = AllFunction.getDate(formattedDate);
+        curentTime = getDate + " " + getTime;
+        return curentTime;
     }
 
     private boolean checkPlayServices() {
@@ -394,6 +358,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 
         return true;
     }
+
     //
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -402,6 +367,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 .addApi(LocationServices.API)
                 .build();
     }
+
     private class CountDownTimerToTrackLocation extends CountDownTimer {
         public CountDownTimerToTrackLocation(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -411,8 +377,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         public void onTick(long l) {
 
         }
-
-
         public void onFinish() {
             TimerToTrackLocation.cancel();
 
@@ -429,7 +393,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
-    //
     private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time) {
         String strDate;
         String strTime;
@@ -499,8 +462,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     .show();
         }
     }
-
-    //
     private boolean getCurrentLocation() {
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -530,20 +491,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             if (mGoogleApiClient.isConnected())
                 mGoogleApiClient.disconnect();
         }
-    }
-
-    private ArrayList<uploadData> getData() {
-        data = new ArrayList<>();
-        uploadData uplData = new uploadData();
-        uplData.JobID = AllFunction.getIntFromSharedPref(context, Preference.prefJobID);
-        uplData.TaskID = AllFunction.getIntFromSharedPref(context, Preference.prefTaskID);
-        uplData.DoneStatus = "DONE";
-        uplData.ActualStart = AllFunction.getStringFromSharedPref(context, Preference.prefActualStart);
-        uplData.ActualEnd = AllFunction.getStringFromSharedPref(context, Preference.prefActualEnd);
-        uplData.ReasonState = 0;
-        uplData.ReasonID = 0;
-        data.add(uplData);
-        return data;
     }
 
 }

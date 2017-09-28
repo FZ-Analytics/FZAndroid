@@ -70,7 +70,7 @@ public class SyncService {
 //						setAllOff(response.body().getCoreResponse().getMsg());
                         ProccessWait(response.body().getCoreResponse().getMsg());
                     else if (response.body().getCoreResponse().getCode() == FixValue.intSuccess) {
-                        AllUploadData.initAllUploadData();
+                        AllUploadData.initUser();
                         AllFunction.storeToSharedPref(context, 1, Preference.prefDutyTask);
                         AllTaskList_adapter.getInstance().setAlltaskList(response.body().getTaskListResponse());
                         ProcessReasonFail();

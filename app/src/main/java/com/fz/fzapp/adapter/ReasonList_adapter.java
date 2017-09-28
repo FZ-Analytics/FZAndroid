@@ -10,10 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import com.fz.fzapp.R;
 import com.fz.fzapp.common.Planning;
@@ -21,11 +25,16 @@ import com.fz.fzapp.common.SyncData;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.UploadPlanData;
 import com.fz.fzapp.model.ReasonResponse;
+import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.popup.ReasonStatus;
 import com.fz.fzapp.sending.UploadHolder;
 import com.fz.fzapp.service.AllFunction;
+import com.fz.fzapp.service.DataLink;
+import com.fz.fzapp.service.UploadData;
+import com.fz.fzapp.utils.FixValue;
 import com.fz.fzapp.utils.Preference;
 import com.fz.fzapp.utils.SaveToSQLite;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +81,7 @@ public class ReasonList_adapter extends BaseAdapter {
         }
 
         ViewHolder vhView = new ViewHolder(view);
-        vhView.tvReasonName.setText(reasonResponses.get(i).getReasonname() + " / " + reasonResponses.get(i).getReasondesc());
+        vhView.tvReasonName.setText(reasonResponses.get(i).getReasondesc());
         vhView.tvReasonName.setTag(i);
 
         return view;
@@ -91,56 +100,105 @@ public class ReasonList_adapter extends BaseAdapter {
             switch (view.getId()) {
                 case R.id.rlDetailReason:
                 case R.id.tvReasonName:
-                    Integer idxView = (Integer) tvReasonName.getTag();
-                    final String[] strReason = {""};
-                    if (reasonResponses.get(idxView).getReasonname() == "Alasan Lain") {
-                        ReasonStatus reasonStatus = new ReasonStatus(activity);
-                        reasonStatus.show();
-                        reasonStatus.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialogInterface) {
-                                strReason[0] = AllFunction.getStringFromSharedPref(mContext, Preference.prefOtherReason);
-                            }
-                        });
-                    } else
-                        strReason[0] = reasonResponses.get(idxView).getReasonname();
-
+                    Integer rsnId = (Integer) tvReasonName.getTag();
+//                    final String[] strReason = {""};
+//                    if (reasonResponses.get(idxView).getReasonname() == "Alasan Lain") {
+//                        ReasonStatus reasonStatus = new ReasonStatus(activity);
+//                        reasonStatus.show();
+//                        reasonStatus.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                            @Override
+//                            public void onDismiss(DialogInterface dialogInterface) {
+//                                strReason[0] = AllFunction.getStringFromSharedPref(mContext, Preference.prefOtherReason);
+//                            }
+//                        });
+//                    } else
+//                        strReason[0] = reasonResponses.get(idxView).getReasonname();
                     if (intDuty == 2) {
+                        //Succsess
                         int countingArray = AllFunction.getIntFromSharedPref(mContext, "countingArray");
                         if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
-                            uploadSync();
-                            Intent SyncIntent = new Intent(mContext, SyncData.class);
-                            mContext.startActivity(SyncIntent);
-                            activity.finish();
+                            //Succsecc once job
+                            AllFunction.uploadSync(rsnId, mContext);
+                            UploadDataJob();
+
                         } else {
+                            //success half job
+                            AllFunction.uploadSync(rsnId, mContext);
                             AllFunction.storeToSharedPrefCount(mContext, "countingArray", countingArray);
                             Intent planningIntent = new Intent(mContext, Planning.class);
                             mContext.startActivity(planningIntent);
                             activity.finish();
                         }
-                    }else{
+                    } else {
+                        //fail
+                        AllFunction.uploadSync(rsnId, mContext);
                         Intent SyncIntent = new Intent(mContext, SyncData.class);
                         mContext.startActivity(SyncIntent);
                         activity.finish();
+
                     }
 //                    SaveToSQLite saveToSQLite = new SaveToSQLite(strReason[0], activity, mContext, intDuty);
 //                    saveToSQLite.ProcessToSQLite();
                     break;
             }
         }
+
+        private void UploadDataJob() {
+            UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+            if (CheckConnection() == -1) return;
+            DataLink dataLink = AllFunction.BindingData();
+            final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);
+            ReceiveUpload.enqueue(new Callback<UploadPojo>() {
+                @Override
+                public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
+                    if (response.isSuccessful()) {
+                        String msg = response.body().getCoreResponse().getMsg();
+                        Intent SyncIntent = new Intent(mContext, SyncData.class);
+                        mContext.startActivity(SyncIntent);
+                        activity.finish();
+                    } else {
+                        setAllOff(mContext.getResources().getString(R.string.msgServerData));
+                        Toast.makeText(mContext, "Check Your Connection", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UploadPojo> call, Throwable t) {
+
+                }
+            });
+            String s;
+        }
+
+        private Integer CheckConnection() {
+            if (AllFunction.isNetworkAvailable(mContext) == FixValue.TYPE_NONE) {
+                setAllOff(mContext.getResources().getString(R.string.msgServerResponse));
+                return -1;
+            }
+            return 0;
+        }
+
+        private void setAllOff(String strMsg) {
+////            tvMsg.setText(context.getResources().getString(R.string.titleKlik));
+//            ivGo.setBackgroundResource(R.drawable.buttonthick);
+//            popupMessege.ShowMessege1(mContext, strMsg);
+        }
     }
-    public static void uploadSync() {
-        UploadPlanData uploadPlanData = new UploadPlanData();
-        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(mContext, Preference.prefJobID));
-        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
-        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
-        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
-        uploadPlanData.setReasonState(0);
-        uploadPlanData.setReasonID(0);
-        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
-        List<UploadPlanData> lstUpload = new ArrayList<>();
-        lstUpload.add(uploadPlanData);
-        AllUploadData.getInstance().setUploadData(lstUpload);
-        UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance());
-    }
+
+
+//    public static void uploadSync(int rsnID) {
+//        UploadPlanData uploadPlanData = new UploadPlanData();
+//        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(mContext, Preference.prefJobID));
+//        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
+//        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
+//        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
+//        uploadPlanData.setReasonState(0);
+//        uploadPlanData.setReasonID(rsnID);
+//        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
+//
+//        AllUploadData.getInstance().setDatanya(uploadPlanData);
+//        final Gson gson = new Gson();
+//        Log.d("Test", "onCreate: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
+//    }
 }
