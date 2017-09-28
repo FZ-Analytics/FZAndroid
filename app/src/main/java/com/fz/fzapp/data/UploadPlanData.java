@@ -86,5 +86,4 @@ public class UploadPlanData {
     public void setReasonID(Integer reasonID) {
         this.reasonID = reasonID;
     }
-
 }

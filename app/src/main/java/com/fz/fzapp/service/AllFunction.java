@@ -29,9 +29,12 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.fz.fzapp.data.AllUploadData;
+import com.fz.fzapp.data.UploadPlanData;
 import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.utils.FixValue;
 import com.fz.fzapp.utils.PopupMessege;
+import com.fz.fzapp.utils.Preference;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
@@ -659,6 +662,21 @@ public class AllFunction extends AppCompatActivity {
         return retBindingData.create(DataLink.class);
     }
 
+    public static void uploadSync(int rsnID, Context mContext) {
+        UploadPlanData uploadPlanData = new UploadPlanData();
+        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(mContext, Preference.prefJobID));
+        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
+        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
+        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
+        uploadPlanData.setReasonState(AllFunction.getIntFromSharedPref(mContext, "getReasonId"));
+        uploadPlanData.setReasonID(rsnID);
+        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
 
+        AllUploadData.getInstance().setDatanya(uploadPlanData);
+        final Gson gson = new Gson();
+        Log.d("Test", "onCreate: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
+
+
+    }
 
 }

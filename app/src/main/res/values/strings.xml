@@ -1,115 +1,115 @@
 <resources>
-	<string name="app_name">FZ App</string>
+    <string name="app_name">FZ App</string>
 
-	<string name="titleLogin">Login</string>
-	<string name="titleHeadAccount">Create Account</string>
-	<string name="titleMessege">Informasi</string>
-	<string name="titleDownload">Download</string>
-	<string name="titleProfile">Profile</string>
-	<string name="titlePassword">Password</string>
-	<string name="titleSyncData1">Sinkronisasi</string>
-	<string name="titleSyncData2">Data</string>
-	<string name="titleUpload">Upload</string>
-	<string name="titleLogout">Logout</string>
-	<string name="titleChangePassword">Change Password</string>
-	<string name="titleTaskInput">Task Status</string>
-	<string name="titleTaskList">Task List</string>
-	<string name="titleReason">Reason</string>
-	<string name="titleKlik">Klik Tombol</string>
-	<string name="notifikasiText">Notifikasi</string>
+    <string name="titleLogin">Login</string>
+    <string name="titleHeadAccount">Create Account</string>
+    <string name="titleMessege">Informasi</string>
+    <string name="titleDownload">Download</string>
+    <string name="titleProfile">Profile</string>
+    <string name="titlePassword">Password</string>
+    <string name="titleSyncData1">Sinkronisasi</string>
+    <string name="titleSyncData2">Data</string>
+    <string name="titleUpload">Upload</string>
+    <string name="titleLogout">Logout</string>
+    <string name="titleChangePassword">Change Password</string>
+    <string name="titleTaskInput">Task Status</string>
+    <string name="titleTaskList">Task List</string>
+    <string name="titleReason">Reason</string>
+    <string name="titleKlik">Klik Tombol</string>
+    <string name="notifikasiText">Notifikasi</string>
 
-	<string name="titlePlan1">Rencana</string>
-	<string name="titlePlan2">Aktifitas</string>
-	<string name="titlePlan3">Tugas</string>
-	<string name="titlePlan4">Berikutnya</string>
-	<string name="titleDutyStart">Mulai</string>
-	<string name="titleDutyEnd">Akhiri Hari</string>
-	<string name="titleDuty1">Tugas</string>
-	<string name="titleDuty2">Sekarang</string>
-	<string name="titleReason1">Alasan</string>
-	<string name="titleReason2">Telat</string>
-	<string name="titleDone">Selesai</string>
-	<string name="titleRecap1">Rekap</string>
-	<string name="titleRecap2">Aktifitas</string>
+    <string name="titlePlan1">Rencana</string>
+    <string name="titlePlan2">Aktifitas</string>
+    <string name="titlePlan3">Tugas</string>
+    <string name="titlePlan4">Berikutnya</string>
+    <string name="titleDutyStart">Mulai</string>
+    <string name="titleDutyEnd">Akhiri Hari</string>
+    <string name="titleDuty1">Tugas</string>
+    <string name="titleDuty2">Sekarang</string>
+    <string name="titleReason1">Alasan</string>
+    <string name="titleReason2">Telat</string>
+    <string name="titleDone">Selesai</string>
+    <string name="titleRecap1">Rekap</string>
+    <string name="titleRecap2">Aktifitas</string>
 
-	<string name="strCreateAkun">Don\'t have an account ?<u>Create Account</u></string>
-	<string name="strSubmitLogin">Submit</string>
-	<string name="strAccountData">Account Data</string>
-	<string name="strBtnOK">OK</string>
-	<string name="strBtnCancel">Akhiri Hari</string>
-	<string name="strWait">Harap tunggu</string>
-	<string name="strLoginProcess">Processing login</string>
-	<string name="strTaskListProcess">Processing task list</string>
-	<string name="strStorageAccessDenied">Access not allowed</string>
-	<string name="strButtonChange">Change</string>
-	<string name="strButtonCancel">Cancel</string>
-	<string name="strPasswordSame">Input different password</string>
-	<string name="strPasswordVerification">Check Verification</string>
-	<string name="strOldPasswordBlank">Input Old Password</string>
-	<string name="strNewPasswordBlank">Input New Password</string>
-	<string name="strVerificationBlank">Input Verification</string>
-	<string name="strLogoutApps">Logout current user ?</string>
-	<string name="strStorageNotAllowed">Write to storage not allowed</string>
-	<string name="strTaskListReload">Reload tasklist data</string>
-	<string name="strExpectedTime">Start :</string>
-	<string name="strDatabaseFailed">Init database failed</string>
-	<string name="strDeviceNotSupported">"This device is not supported"</string>
-	<string name="strStartLocation">"Failed to start location"</string>
-	<string name="strCurrentLocation">"Failed to current location"</string>
-	<string name="strConnectionFailed">"Connection failed"</string>
-	<string name="strGPSFailed">GPS not active. Enable GPS ?</string>
-	<string name="strReason">Input reason please</string>
-	<string name="strTaskListDone">already done ?</string>
-	<string name="strInputReason">Input reason for</string>
-	<string name="strDueTime">Waktu Anda</string>
-	<string name="strDestiny">Pergi Ke</string>
-	<string name="strMinute">Jam : Menit</string>
-	<string name="strTaskStateDone">TaskList already done</string>
-	<string name="strFullnameEmpty">Input fullname please</string>
-	<string name="strPhonenameEmpty">Input phone numer please"</string>
-	<string name="strRegistrationSuccess">Registration for new user success</string>
-	<string name="strSyncFinish">Upload data finished</string>
-	<string name="strSyncProgress">Proses upload data</string>
-	<string name="strUploadDataEmpty">Data already uploaded or empty</string>
-	<string name="strUploadDataFailed">Failed read data for upload</string>
-	<string name="strUploadData">already uploaded or empty</string>
-	<string name="strStartTask">Mulai : %s</string>
-	<string name="strStartFinish">Selesai : %s</string>
-	<string name="strDutyDone">Selesai</string>
-	<string name="strDutyFail">Tidak</string>
-	<string name="strGetReason">Proses data alasan</string>
-	<string name="strReason1">Tidak Selesai</string>
-	<string name="strReason2">Telat</string>
-	<string name="strNextRecap">Berikutnya ></string>
-	<string name="strOnSchedule">Pekerjaan tepat waktu</string>
-	<string name="strTaskDone">(Selesai)</string>
+    <string name="strCreateAkun">Don\'t have an account ?<u>Create Account</u></string>
+    <string name="strSubmitLogin">Submit</string>
+    <string name="strAccountData">Account Data</string>
+    <string name="strBtnOK">OK</string>
+    <string name="strBtnCancel">Akhiri Hari</string>
+    <string name="strWait">Harap tunggu</string>
+    <string name="strLoginProcess">Processing login</string>
+    <string name="strTaskListProcess">Processing task list</string>
+    <string name="strStorageAccessDenied">Access not allowed</string>
+    <string name="strButtonChange">Change</string>
+    <string name="strButtonCancel">Cancel</string>
+    <string name="strPasswordSame">Input different password</string>
+    <string name="strPasswordVerification">Check Verification</string>
+    <string name="strOldPasswordBlank">Input Old Password</string>
+    <string name="strNewPasswordBlank">Input New Password</string>
+    <string name="strVerificationBlank">Input Verification</string>
+    <string name="strLogoutApps">Logout current user ?</string>
+    <string name="strStorageNotAllowed">Write to storage not allowed</string>
+    <string name="strTaskListReload">Reload tasklist data</string>
+    <string name="strExpectedTime">Start :</string>
+    <string name="strDatabaseFailed">Init database failed</string>
+    <string name="strDeviceNotSupported">"This device is not supported"</string>
+    <string name="strStartLocation">"Failed to start location"</string>
+    <string name="strCurrentLocation">"Failed to current location"</string>
+    <string name="strConnectionFailed">"Connection failed"</string>
+    <string name="strGPSFailed">GPS not active. Enable GPS ?</string>
+    <string name="strReason">Input reason please</string>
+    <string name="strTaskListDone">already done ?</string>
+    <string name="strInputReason">Input reason for</string>
+    <string name="strDueTime">Waktu Anda</string>
+    <string name="strDestiny">Pergi Ke</string>
+    <string name="strMinute">Jam : Menit</string>
+    <string name="strTaskStateDone">TaskList already done</string>
+    <string name="strFullnameEmpty">Input fullname please</string>
+    <string name="strPhonenameEmpty">Input phone numer please"</string>
+    <string name="strRegistrationSuccess">Registration for new user success</string>
+    <string name="strSyncFinish">Upload data finished</string>
+    <string name="strSyncProgress">Proses upload data</string>
+    <string name="strUploadDataEmpty">Data already uploaded or empty</string>
+    <string name="strUploadDataFailed">Failed read data for upload</string>
+    <string name="strUploadData">already uploaded or empty</string>
+    <string name="strStartTask">Mulai : %s</string>
+    <string name="strStartFinish">Selesai : %s</string>
+    <string name="strDutyDone">Selesai</string>
+    <string name="strDutyFail">Tidak</string>
+    <string name="strGetReason">Proses data alasan</string>
+    <string name="strReason1">Tidak Selesai</string>
+    <string name="strReason2">Telat</string>
+    <string name="strNextRecap">Berikutnya ></string>
+    <string name="strOnSchedule">Pekerjaan tepat waktu</string>
+    <string name="strTaskDone">(Selesai)</string>
 
-	<string name="msgInputUserID">Masukan nama user</string>
-	<string name="msgInputPassword">Masukan password</string>
-	<string name="msgServerResponse">Server tidak merespon</string>
-	<string name="msgServerFailure">Server tidak dikenali</string>
-	<string name="msgServerData">Respon dari server tidak dikenali</string>
-	<string name="msgContinueSync">Upload data ke server ?</string>
+    <string name="msgInputUserID">Masukan nama user</string>
+    <string name="msgInputPassword">Masukan password</string>
+    <string name="msgServerResponse">Server tidak merespon</string>
+    <string name="msgServerFailure">Server tidak dikenali</string>
+    <string name="msgServerData">Respon dari server tidak dikenali</string>
+    <string name="msgContinueSync">Upload data ke server ?</string>
 
-	<string name="hintHPNumber">Phone Number<font color='red'>*</font></string>
-	<string name="hintPassword">Password<font color='red'>*</font></string>
-	<string name="hintPasswordVerification">Verification<font color='red'>*</font></string>
-	<string name="hintNewPassword">New Password<font color='red'>*</font></string>
-	<string name="hintOldPassword">Old Password<font color='red'>*</font></string>
-	<string name="hintVerificationPassword">Verification<font color='red'>*</font></string>
-	<string name="hintUserID">Nama User<font color='red'>*</font></string>
-	<string name="hintUsername">Username<font color='red'>*</font></string>
-	<string name="hintTaskInput">Input task status<font color='red'>*</font></string>
-	<string name="hintReason">Input the reason<font color='red'>*</font></string>
+    <string name="hintHPNumber">Phone Number<font color='red'>*</font></string>
+    <string name="hintPassword">Password<font color='red'>*</font></string>
+    <string name="hintPasswordVerification">Verification<font color='red'>*</font></string>
+    <string name="hintNewPassword">New Password<font color='red'>*</font></string>
+    <string name="hintOldPassword">Old Password<font color='red'>*</font></string>
+    <string name="hintVerificationPassword">Verification<font color='red'>*</font></string>
+    <string name="hintUserID">Nama User<font color='red'>*</font></string>
+    <string name="hintUsername">Username<font color='red'>*</font></string>
+    <string name="hintTaskInput">Input task status<font color='red'>*</font></string>
+    <string name="hintReason">Input the reason<font color='red'>*</font></string>
 
-	<string name="titleTanggal">Tanggal</string>
-	<string name="titleJam">Jam</string>
-	<string name="titleDari">Dari</string>
-	<string name="titleKe">Ke</string>
+    <string name="titleTanggal">Tanggal</string>
+    <string name="titleJam">Jam</string>
+    <string name="titleDari">Dari</string>
+    <string name="titleKe">Ke</string>
 
-	<string name="detailPlanningDate">Tanggal</string>
-	<string name="detailPlanningEstimate">Estimasi Waktu</string>
-	<string name="detailPlanningTonase">Tonnage</string>
+    <string name="detailPlanningDate">Tanggal</string>
+    <string name="detailPlanningEstimate">Estimasi Waktu</string>
+    <string name="detailPlanningTonase">Tonnage</string>
 
 
 </resources>
