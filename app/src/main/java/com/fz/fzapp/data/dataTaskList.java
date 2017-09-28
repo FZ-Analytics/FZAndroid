@@ -37,8 +37,6 @@ public class dataTaskList
     return To;
   }
 
-
-
   @Override
   public String toString()
   {

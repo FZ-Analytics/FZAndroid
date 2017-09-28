@@ -266,30 +266,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 break;
         }
     }
-////    public void uploadSync() {
-////        UploadPlanData uploadPlanData = new UploadPlanData();
-////        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(context, Preference.prefJobID));
-////        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(context, Preference.prefTaskID));
-////        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(context, Preference.prefActualStart));
-////        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(context, Preference.prefActualEnd));
-////        uploadPlanData.setReasonState(0);
-////        uploadPlanData.setReasonID(0);
-////        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(context, Preference.prefDoneStatus));
-////
-////        AllUploadData.getInstance().setDatanya(uploadPlanData);
-//
-///*
-//        List<UploadPlanData> lstUpload = new ArrayList<>();
-//        lstUpload.add(uploadPlanData);
-//
-//        AllUploadData.getInstance().setUploadData(lstUpload);
-//
-//        UploadHolder uploadHolder = new UploadHolder(uploadPlanData);
-//        Log.d(TAG, "uploadSync: " + AllUploadData.getInstance().getUploadData().size());
-//
-//        getUpload(uploadHolder);
-//*/
-//    }
+
     public void getUpload() {
         UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
         if (CheckConnection() == -1) return;
