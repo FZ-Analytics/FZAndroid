@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+   android:id="@+id/namauser"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:paddingLeft="@dimen/activity_horizontal_margin"
+   android:paddingRight="@dimen/activity_horizontal_margin"
+   android:paddingTop="@dimen/activity_vertical_margin"
+   android:paddingBottom="@dimen/activity_vertical_margin"
+   tools:context="com.fz.fzapp.common.Username">
+
+    <TextView
+       style="@style/DefaultUtils3"
+       android:text="@string/titleLogin"
+       android:id="@+id/textView"
+       android:layout_alignParentTop="true"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentStart="true"/>
+
+    <Button
+       style="@style/DefaultSplitter"
+       android:layout_below="@+id/textView"
+       android:id="@+id/splitter"
+       android:layout_marginTop="8dp"
+       android:layout_alignLeft="@+id/textView"
+       android:layout_alignStart="@+id/textView"/>
+
+    <EditText
+       style="@style/DefaultEditText"
+       android:id="@+id/etUsernameLogin"
+       android:layout_marginTop="150dp"
+       android:ems="10"
+       android:text="heru"
+       android:drawableLeft="@drawable/ic_account"
+       android:maxLength="75"
+       android:hint="@string/hintUserID"
+       android:inputType="textPersonName"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentStart="true"
+       android:layout_alignRight="@+id/splitter"
+       android:layout_marginRight="25dp"
+       android:layout_alignEnd="@+id/splitter"/>
+
+    <RelativeLayout
+       style="@style/DefaultButton"
+       android:id="@+id/rlUsername"
+       android:layout_below="@id/etUsernameLogin"
+       android:layout_marginLeft="140dp"
+       android:layout_marginTop="40dp"
+       android:layout_alignRight="@+id/etUsernameLogin"
+       android:layout_alignEnd="@+id/etUsernameLogin">
+
+        <Button
+           android:layout_width="38dp"
+           android:layout_height="32dp"
+           android:background="@drawable/ic_arrow_forward_24dp"
+           android:id="@+id/btnUsernameLogin"
+           android:layout_centerVertical="true"
+           android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</RelativeLayout>

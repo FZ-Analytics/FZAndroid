@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+	<RelativeLayout
+			android:id="@+id/rlDetailArmada"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/rectroundtrans"
+			android:layout_alignParentTop="true"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true">
+
+		<ImageView
+		android:layout_width="46dp"
+		android:layout_height="46dp"
+		android:background="@drawable/circleduty"
+		android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:id="@+id/imageView"
+		android:layout_marginTop="5dp"
+		android:layout_marginBottom="5dp"/>
+
+		<TextView
+		android:text="TextView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginLeft="57dp"
+		android:layout_marginStart="57dp"
+		android:id="@+id/tvTasklist"
+		android:layout_toLeftOf="@+id/ivDetailDuty"
+		android:layout_toStartOf="@+id/ivDetailDuty"/>
+
+		<ImageView
+		android:layout_width="32dp"
+		android:layout_height="32dp"
+		android:layout_centerVertical="true"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:id="@+id/ivDetailDuty"
+		android:background="@drawable/ic_detail"/>
+	</RelativeLayout>
+</RelativeLayout>

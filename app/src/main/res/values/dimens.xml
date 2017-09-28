@@ -1,0 +1,32 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    //syncData
+    <dimen name="diameter_circle">230dp</dimen>
+    <dimen name="padding_12">12dp</dimen>
+    <dimen name="padding_14">14dp</dimen>
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_18">18dp</dimen>
+    <dimen name="padding_20">20dp</dimen>
+    <dimen name="padding_22">22dp</dimen>
+    <dimen name="padding_24">24dp</dimen>
+    <dimen name="padding_26">26dp</dimen>
+    <dimen name="padding_28">28dp</dimen>
+    <dimen name="padding_30">30dp</dimen>
+    <dimen name="padding_32">32dp</dimen>
+    <dimen name="padding_34">34dp</dimen>
+    <dimen name="padding_60">60dp</dimen>
+    <dimen name="padding_160">160dp</dimen>
+    <dimen name="padding_200">200dp</dimen>
+
+
+
+
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="DefaultActivity">18dp</dimen>
+    <dimen name="marginPlanning">8dp</dimen>
+    <dimen name="paddingPlanning">8dp</dimen>
+
+
+</resources>

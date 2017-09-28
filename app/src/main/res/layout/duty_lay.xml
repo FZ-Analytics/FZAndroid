@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sinkrondata_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.fz.fzapp.common.SyncData">
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/DefaultUtils3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/titleDuty1" />
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/DefaultHead1"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:text="@string/titleDuty2" />
+
+    <Button
+        android:id="@+id/splitter"
+        style="@style/DefaultSplitter"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="10dp" />
+
+    <RelativeLayout
+        android:id="@+id/llMaps"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:weightSum="8">
+
+            <Button
+                android:id="@+id/btnDutyDone"
+                style="@style/DefaultButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="7dip"
+                android:layout_weight="3"
+                android:ems="10"
+                android:text="@string/strDutyDone" />
+
+            <Button
+                android:id="@+id/btnDutyFails"
+                style="@style/DefaultGrayButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="7dip"
+                android:layout_weight="5"
+                android:ems="10"
+                android:text="@string/strDutyFail" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/splitter"
+        android:layout_marginTop="11dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llTimer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_30"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvCurrent"
+                    style="@style/DefaultUtils3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_14"
+                    android:ems="10"
+                    android:text="@string/strDueTime" />
+
+                <RelativeLayout
+                    android:layout_width="@dimen/padding_160"
+                    android:layout_height="@dimen/padding_160"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageView
+                        android:id="@+id/ivGo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/circle_green" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <TextView
+                            android:id="@+id/tvTimer"
+                            style="@style/DefaultHead1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="00:00:00"
+                            android:textSize="@dimen/padding_26" />
+                        <!--<TextView-->
+                        <!--style="@style/DefaultHead1"-->
+                        <!--android:text=":"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:textSize="@dimen/padding_32"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_marginBottom="10dp"/>-->
+                        <!--<TextView-->
+                        <!--style="@style/DefaultHead1"-->
+                        <!--android:text="00"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:textSize="@dimen/padding_32"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:id="@+id/tvMinutes"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_marginBottom="10dp"/>-->
+                        <!--<TextView-->
+                        <!--style="@style/DefaultHead1"-->
+                        <!--android:text=":"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:textSize="@dimen/padding_32"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_marginBottom="10dp"/>-->
+                        <!--<TextView-->
+                        <!--style="@style/DefaultHead1"-->
+                        <!--android:text="00"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:textSize="@dimen/padding_32"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center"-->
+                        <!--android:id="@+id/tvSecond"-->
+                        <!--android:layout_marginBottom="10dp"/>-->
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tvTrackTest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textSize="@dimen/padding_18" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTimer"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/llTimer2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/splitter"
+            android:layout_marginRight="2dp"
+
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDestiny"
+                style="@style/DefaultUtils3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:ems="10"
+                android:text="@string/titleDari" />
+
+            <LinearLayout
+                android:id="@+id/borderLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_14">
+
+                <TextView
+                    android:id="@+id/tvStartDutty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Start" />
+
+                <TextView
+                    android:id="@+id/tvTimeActualDutty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Time"
+                    android:textSize="@dimen/padding_12" />
+                />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/splitter"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/DefaultUtils3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:ems="10"
+                android:text="@string/titleKe" />
+
+            <LinearLayout
+                android:id="@+id/borderLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_14">
+
+                <TextView
+                    android:id="@+id/tvDestinationDutty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Destination" />
+
+                <TextView
+                    android:id="@+id/tvtimeEstimateDutty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Time"
+                    android:textSize="@dimen/padding_12" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTrackTest2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
