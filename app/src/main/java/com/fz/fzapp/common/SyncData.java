@@ -2,6 +2,7 @@ package com.fz.fzapp.common;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -71,7 +72,7 @@ public class SyncData extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    @OnClick({R.id.ivOtherMenu, R.id.ivGo})
+    @OnClick({R.id.ivOtherMenu, R.id.ivGo,R.id.btnCancelGo})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivGo:
@@ -83,7 +84,7 @@ public class SyncData extends AppCompatActivity {
                 SyncService syncData = new SyncService(activity, context);
                 syncData.getTaskList();
                 break;
-            case R.id.btnEndDay:
+            case R.id.btnCancelGo:
                 RetriveContent();
                 break;
 //      case R.id.btnEndDay:
@@ -97,11 +98,7 @@ public class SyncData extends AppCompatActivity {
         if (CheckConnection() == -1) return;
         LogoutData logoutData = new LogoutData();
         logoutData.setUserID(AllFunction.getIntFromSharedPref(context, Preference.prefUserID));
-        logoutData.setVehicleID(AllFunction.getIntFromSharedPref(context, Preference.prefVehicleID));
-        logoutData.setEndTime(curentTime());
-
         LogoutHolder logoutHolder = new LogoutHolder(logoutData);
-
         DataLink dataLink = AllFunction.BindingData();
 
         final Call<LogoutPojo> ReceiveLogout = dataLink.LogoutService(logoutHolder);
@@ -112,6 +109,8 @@ public class SyncData extends AppCompatActivity {
                 if (response.body().getCoreResponse().getCode() != FixValue.intSuccess)
                     ProccessWait(response.body().getCoreResponse().getMsg());
                 else if (response.body().getCoreResponse().getCode() == FixValue.intSuccess) {
+                    Intent intent = new Intent(SyncData.this, Username.class);
+                    startActivity(intent);
                    }
 
             }
@@ -143,16 +142,5 @@ public class SyncData extends AppCompatActivity {
         tvNotifeSync.setText(msg);
         ivGo.setImageResource(R.drawable.buttonthick);
     }
-    private String curentTime() {
-        String curentTime = null;
-        Calendar c = Calendar.getInstance();
-        System.out.println("Current time =&gt; " + c.getTime());
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
-        // Now formattedDate have current date/time
-        String getTime = AllFunction.getTime(formattedDate);
-        String getDate = AllFunction.getDate(formattedDate);
-        curentTime = getDate + " " + getTime;
-        return curentTime;
-    }
+
 }

@@ -10,9 +10,9 @@ import java.util.List;
  */
 
 public class LogoutHolder {
-    private LogoutData logoutData;
+    private LogoutData LogoutUser;
 
     public LogoutHolder(LogoutData logoutDatas) {
-        logoutData = logoutDatas;
+        LogoutUser = logoutDatas;
     }
 }

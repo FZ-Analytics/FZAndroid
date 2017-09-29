@@ -46,7 +46,7 @@ public class SyncService {
         this.context = context;
         this.tvNotifeSync = (TextView) activity.findViewById(R.id.tvNotifeSync);
         this.tvMsg = (TextView) activity.findViewById(R.id.tvMsg);
-        this.btnCancelGo = (Button) activity.findViewById(R.id.btnCancelGo);
+//        this.btnCancelGo = (Button) activity.findViewById(R.id.btnCancelGo);
         this.ivGo = (ImageView) activity.findViewById(R.id.ivGo);
     }
 

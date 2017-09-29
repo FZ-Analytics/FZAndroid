@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -51,6 +52,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -130,39 +136,38 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
         RetriveContent();
+        GetLocation();
+
+    }
+
+    private void GetLocation() {
+        if(checkPlayServices())
+        {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        long TimeTrackLocation = AllFunction.getLongFromSharedPref(context, Preference.prefTimeTrack);
+        TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
+        TimerToTrackLocation.cancel();
 
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                // The next two lines tell the new client that “this” current class will handle connection stuff
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //fourth line adds the LocationServices API endpoint from GooglePlayServices
-                .addApi(LocationServices.API)
-                .build();
+        File fScr = new File("/data/data/com.fz.fzapp/databases/", "tasklist.sqlite");
 
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(5 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+        if(fScr.exists())
+        {
+            Toast.makeText(context, "File exists", Toast.LENGTH_LONG);
+            File fDest = new File(Environment.getExternalStorageDirectory(), "tasklist.sqlite");
 
-        Timer myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-               createLocationRequest();
+            try
+            {
+                copyToExternal(fScr, fDest);
             }
-        }, 0, 10);
-//    StartDutyCheck();
-//
-//        if (checkPlayServices()) {
-//            buildGoogleApiClient();
-//            createLocationRequest();
-//        }
-//
-//        long TimeTrackLocation = AllFunction.getLongFromSharedPref(context, Preference.prefTimeTrack);
-//        TimerToTrackLocation = new CountDownTimerToTrackLocation(100, 1000);
-//        TimerToTrackLocation.cancel();
+            catch(IOException e)
+            {
+                // e.printStackTrace();
+            }
+        }
     }
 
 
@@ -379,6 +384,69 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 .build();
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        startLocationUpdates();
+        getCurrentLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getApplicationContext(),
+                context.getResources().getString(R.string.strConnectionFailed), Toast.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        TimerToTrackLocation.cancel();
+        tvTrackTest.setText("Lat : " + String.valueOf(mLastLocation.getLatitude()) + ", Long : " + String.valueOf(mLastLocation.getLongitude()));
+        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
+        TimerToTrackLocation.start();
+    }
+
+    protected void startLocationUpdates()
+    {
+        try
+        {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+        catch (SecurityException e)
+        {
+            Toast.makeText(getApplicationContext(),
+                    context.getResources().getString(R.string.strStartLocation), Toast.LENGTH_LONG)
+                    .show();
+        }
+    }
+
+    private boolean getCurrentLocation()
+    {
+        try
+        {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+        catch (SecurityException e)
+        {
+            Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.strCurrentLocation),
+                    Toast.LENGTH_LONG).show();
+
+            return false;
+        }
+
+        if(mLastLocation == null) return false;
+
+        return true;
+    }
+
+
+
+
     private class CountDownTimerToTrackLocation extends CountDownTimer {
         public CountDownTimerToTrackLocation(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -405,6 +473,25 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10);
+    }
+
+    public void copyToExternal(File src, File dst) throws IOException
+    {
+        FileInputStream inStream = new FileInputStream(src);
+        FileOutputStream outStream = new FileOutputStream(dst);
+        FileChannel inChannel = inStream.getChannel();
+        FileChannel outChannel = outStream.getChannel();
+        inChannel.transferTo(0, inChannel.size(), outChannel);
+        inStream.close();
+        outStream.close();
+    }
+
     private void SaveTrackToSQLite(String Latitude, String Longitude) {
         int userID;
         String endTime;
@@ -425,254 +512,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         hashMap.put("TruckID", String.valueOf(TruckID));
         Log.d(TAG, "SaveTrackToSQLite: " + Latitude + ":" + Longitude);
 
-        database_adapter.SaveTrackingData(hashMap);
-
-        //        if (Date == null) {
-//            strDate = df.format(calendar.getTime());
-//            strTime = tf.format(calendar.getTime());
-//        } else {
-//            strDate = Date;
-//            strTime = Time;
-//        }
 
     }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(10);
-    }
-
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//        startLocationUpdates();
-//        getCurrentLocation();
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//        mGoogleApiClient.connect();
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//        Toast.makeText(getApplicationContext(),
-//                context.getResources().getString(R.string.strConnectionFailed), Toast.LENGTH_LONG)
-//                .show();
-//    }
-//
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        mLastLocation = location;
-//        TimerToTrackLocation.cancel();
-//        tvTrackTest.setText("Lat : " + String.valueOf(mLastLocation.getLatitude()) + ", Long : " + String.valueOf(mLastLocation.getLongitude()));
-//        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
-////    TimerToTrackLocation.start();
-//    }
-
-
-    //
-    protected void startLocationUpdates() {
-        try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        } catch (SecurityException e) {
-            Toast.makeText(getApplicationContext(),
-                    context.getResources().getString(R.string.strStartLocation), Toast.LENGTH_LONG)
-                    .show();
-        }
-    }
-
-    private boolean getCurrentLocation() {
-        try {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        } catch (SecurityException e) {
-            Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.strCurrentLocation),
-                    Toast.LENGTH_LONG).show();
-
-            return false;
-        }
-        if (mLastLocation == null) return false;
-        return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(this.getClass().getSimpleName(), "onPause()");
-
-        //Disconnect from API onPause()
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (!checkPlayServices()) {
-            if (mGoogleApiClient.isConnected())
-                mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if (location == null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
-        } else {
-            //If everything went fine lets get latitude and longitude
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-//            SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
-            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {}
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-            /*
-             * Google Play services can resolve some errors it detects.
-             * If the error has a resolution, try sending an Intent to
-             * start a Google Play services activity that can resolve
-             * error.
-             */
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                    /*
-                     * Thrown if Google Play services canceled the original
-                     * PendingIntent
-                     */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
-            }
-        } else {
-                /*
-                 * If no resolution is available, display a dialog to the
-                 * user with the error.
-                 */
-            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
-        }
-    }
-
-    /**
-     * If locationChanges change lat and long
-     *
-     *
-     * @param location
-     */
-    @Override
-    public void onLocationChanged(Location location) {
-        currentLatitude = location.getLatitude();
-        currentLongitude = location.getLongitude();
-
-        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
-    }
-
 }
-
-//class WrapperUpdate {
-//    private uploadData[] data;
-//
-//    public uploadData[] getData() {
-//        return data;
-//    }
-//}
-//  private class CountDownClass extends CountDownTimer
-//  {
-//    public CountDownClass(long millisInFuture, long countDownInterval)
-//    {
-//      super(millisInFuture, countDownInterval);
-//    }
-//
-//    @Override
-//    public void onTick(long millisUntilFinished)
-//    {
-//      long millis = millisUntilFinished;
-//      String hms = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-//        TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));
-//      tvCountTime.setText(hms);
-//
-//
-//      hms = String.format("%02d", TimeUnit.MILLISECONDS.toSeconds(millis) -
-//        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-////			tvCountTimeSecond.setText(hms);
-//    }
-//
-//    @Override
-//    public void onFinish()
-//    {
-//      CountingTimer.cancel();
-//      onDuty = 2;
-//      tvCountTime.setText("00:00");
-//    }
-//  }
-//
-//  private void StartDutyCheck()
-//  {
-//    intDutyTask = AllFunction.getIntFromSharedPref(context, Preference.prefDutyTask);
-//
-//    strEstTime = AllTaskList_adapter.getInstance().getAlltaskList().get(intDutyTask - 1).getEstimateTime();
-////		btnDestinyTask.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(intDutyTask - 1).getDisplayName());
-//    tvEstTime.setText(context.getString(R.string.strStartTask, strEstTime));
-////    tvActTime.setText(context.getString(R.string.strStartFinish, ""));
-//
-//    calendar = Calendar.getInstance();
-//    Date StartTime = null;
-//    Date EndTime = null;
-//    long countdown = 0;
-//
-//    try
-//    {
-//      StartTime = tf.parse(tf.format(calendar.getTime()));
-//      EndTime = tf.parse(strEstTime);
-//      countdown = EndTime.getTime() - StartTime.getTime();
-//    }catch(ParseException e)
-//    {
-//      //e.printStackTrace();
-//    }
-//
-//    if(countdown > 0)
-//    {
-//      onDuty = 3;
-//      CountingTimer = new CountDownClass(countdown, 1000);
-//      CountingTimer.start();
-//    }else
-//    {
-//      onDuty = 2;
-//    }
-//  }
-//

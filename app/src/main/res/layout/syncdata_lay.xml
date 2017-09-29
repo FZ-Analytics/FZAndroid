@@ -144,7 +144,7 @@
            android:layout_centerHorizontal="true"
            android:layout_marginTop="@dimen/padding_60"
            android:layout_gravity="center"
-           android:id="@+id/btnEndDay"
+           android:id="@+id/btnCancelGo"
            android:visibility="visible"/>
     </LinearLayout>
 
