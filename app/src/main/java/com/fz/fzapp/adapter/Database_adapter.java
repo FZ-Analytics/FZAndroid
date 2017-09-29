@@ -54,8 +54,9 @@ public class Database_adapter extends SQLiteOpenHelper
 
       values.put("Latitude", TrackingData.get("Latitude"));
       values.put("Longitude", TrackingData.get("Longitude"));
-      values.put("Date", TrackingData.get("Date"));
-      values.put("Time", TrackingData.get("Time"));
+      values.put("EndDate", TrackingData.get("EndDate"));
+      values.put("UserID", TrackingData.get("UserID"));
+      values.put("TruckID", TrackingData.get("TruckID"));
       lNewPos = sqlDatabase.insert(LocationTable, null, values);
 
       sqlDatabase.setTransactionSuccessful();

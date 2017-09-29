@@ -16,9 +16,11 @@
 package com.fz.fzapp.service;
 
 import com.fz.fzapp.pojo.LoginPojo;
+import com.fz.fzapp.pojo.LogoutPojo;
 import com.fz.fzapp.pojo.ReasonPojo;
 import com.fz.fzapp.pojo.TaskListPojo;
 import com.fz.fzapp.pojo.UploadPojo;
+import com.fz.fzapp.sending.LogoutHolder;
 import com.fz.fzapp.sending.ReasonHolder;
 import com.fz.fzapp.sending.SyncTrxHolder;
 import com.fz.fzapp.sending.TaskListHolder;
@@ -39,8 +41,8 @@ public interface DataLink
   @POST(FixValue.RestfulLogin)
   Call<LoginPojo> LoginService(@Body UserHolder userHolder);
 
-  @POST(FixValue.RestfulLogout)
-  Call<LoginPojo> LogoutService(@Body UserHolder loginHolder);
+//  @POST(FixValue.RestfulLogout)
+//  Call<LoginPojo> LogoutService(@Body UserHolder loginHolder);
 
   @POST(FixValue.RestfulChangePassword)
   Call<LoginPojo> ChangePasswordService(@Body UserHolder userHolder);
@@ -59,5 +61,10 @@ public interface DataLink
 
   @POST(FixValue.RestfulUpload)
   Call<UploadPojo> uploadService(@Body UploadHolder uploadHolder);
+
+  @POST(FixValue.RestfulLogout)
+  Call<LogoutPojo> LogoutService(@Body LogoutHolder logoutHolder);
+
+
 }
 

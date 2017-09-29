@@ -1,9 +1,12 @@
 package com.fz.fzapp.common;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -12,6 +15,7 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +49,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.nearby.messages.Message;
+import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,6 +61,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Duty extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -108,7 +115,9 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     int getReasonId;
     private Handler myHandler = new Handler();
     SimpleDateFormat form;
-
+    private double currentLatitude;
+    private double currentLongitude;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,16 +130,39 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
         RetriveContent();
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                // The next two lines tell the new client that “this” current class will handle connection stuff
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                .addApi(LocationServices.API)
+                .build();
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(5 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+               createLocationRequest();
+            }
+        }, 0, 10);
 //    StartDutyCheck();
 //
-        if (checkPlayServices()) {
-            buildGoogleApiClient();
-            createLocationRequest();
-        }
-
-        long TimeTrackLocation = AllFunction.getLongFromSharedPref(context, Preference.prefTimeTrack);
-        TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
-        TimerToTrackLocation.cancel();
+//        if (checkPlayServices()) {
+//            buildGoogleApiClient();
+//            createLocationRequest();
+//        }
+//
+//        long TimeTrackLocation = AllFunction.getLongFromSharedPref(context, Preference.prefTimeTrack);
+//        TimerToTrackLocation = new CountDownTimerToTrackLocation(100, 1000);
+//        TimerToTrackLocation.cancel();
     }
 
 
@@ -179,7 +211,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         tvtimeEstimateDutty.setText(timeEnd);
     }
 
-
     private void countingUpTimer(long absDif) {
         onDuty = 2;
         ivGo.setImageResource(R.drawable.circle_red);
@@ -222,7 +253,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         switch (view.getId()) {
             case R.id.btnDutyFails:
                 getReasonId = 1;
-                AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                 //Keluar dari job
                 AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
                 onDuty = 1;
@@ -238,15 +269,15 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     getReasonId = 0;
                     //Telat
                     if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
-                        AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                        AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                         //Success and once job
                         popupMessege.ShowMessege1(context, "upload");
-                        AllFunction.uploadSync(0,context);
+                        AllFunction.uploadSync(0, context);
                         getUpload();
 
                     } else {
                         //Succses and half job
-                        AllFunction.uploadSync(0,context);
+                        AllFunction.uploadSync(0, context);
                         AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
                         Intent planningIntent = new Intent(Duty.this, Planning.class);
                         startActivity(planningIntent);
@@ -254,7 +285,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     }
                 } else {
                     getReasonId = 2;
-                    AllFunction.storeToSharedPref(context,getReasonId,"getReasonId");
+                    AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                     //Late
                     AllFunction.getIntFromSharedPref(context, Preference.prefJobID);
                     Intent ReasonIntents = new Intent(Duty.this, Reason.class);
@@ -268,7 +299,9 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     public void getUpload() {
+        final Gson gson = new Gson();
         UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+        Log.d("Test", "getUploadHolder: " + gson.toJson(uploadHolder));
         if (CheckConnection() == -1) return;
         DataLink dataLink = AllFunction.BindingData();
         final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);
@@ -284,6 +317,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 //                    setAllOff(context.getResources().getString(R.string.msgServerData));
                 }
             }
+
             @Override
             public void onFailure(Call<UploadPojo> call, Throwable t) {
 
@@ -354,6 +388,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         public void onTick(long l) {
 
         }
+
         public void onFinish() {
             TimerToTrackLocation.cancel();
 
@@ -364,33 +399,42 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             }
 
             if (mLastLocation != null)
-                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), null, null);
+                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
 
             TimerToTrackLocation.start();
         }
     }
 
-    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time) {
-        String strDate;
-        String strTime;
+    private void SaveTrackToSQLite(String Latitude, String Longitude) {
+        int userID;
+        String endTime;
+        int TruckID;
 
-        if (Date == null) {
-            strDate = df.format(calendar.getTime());
-            strTime = tf.format(calendar.getTime());
-        } else {
-            strDate = Date;
-            strTime = Time;
-        }
+        endTime = curentTime();
+        userID = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+        TruckID = AllFunction.getIntFromSharedPref(context, Preference.prefVehicleID);
+
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.clear();
 
         hashMap.put("Latitude", Latitude);
         hashMap.put("Longitude", Longitude);
-        hashMap.put("Date", strDate);
-        hashMap.put("Time", strTime);
+        hashMap.put("EndDate", endTime);
+        hashMap.put("UserID", String.valueOf(userID));
+        hashMap.put("TruckID", String.valueOf(TruckID));
+        Log.d(TAG, "SaveTrackToSQLite: " + Latitude + ":" + Longitude);
 
         database_adapter.SaveTrackingData(hashMap);
+
+        //        if (Date == null) {
+//            strDate = df.format(calendar.getTime());
+//            strTime = tf.format(calendar.getTime());
+//        } else {
+//            strDate = Date;
+//            strTime = Time;
+//        }
+
     }
 
     protected void createLocationRequest() {
@@ -401,32 +445,32 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         mLocationRequest.setSmallestDisplacement(10);
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        startLocationUpdates();
-        getCurrentLocation();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(),
-                context.getResources().getString(R.string.strConnectionFailed), Toast.LENGTH_LONG)
-                .show();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        TimerToTrackLocation.cancel();
-        tvTrackTest.setText("Lat : " + String.valueOf(mLastLocation.getLatitude()) + ", Long : " + String.valueOf(mLastLocation.getLongitude()));
-        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), null, null);
-//    TimerToTrackLocation.start();
-    }
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//        startLocationUpdates();
+//        getCurrentLocation();
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//        mGoogleApiClient.connect();
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//        Toast.makeText(getApplicationContext(),
+//                context.getResources().getString(R.string.strConnectionFailed), Toast.LENGTH_LONG)
+//                .show();
+//    }
+//
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        mLastLocation = location;
+//        TimerToTrackLocation.cancel();
+//        tvTrackTest.setText("Lat : " + String.valueOf(mLastLocation.getLatitude()) + ", Long : " + String.valueOf(mLastLocation.getLongitude()));
+//        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
+////    TimerToTrackLocation.start();
+//    }
 
 
     //
@@ -439,6 +483,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     .show();
         }
     }
+
     private boolean getCurrentLocation() {
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -461,6 +506,20 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v(this.getClass().getSimpleName(), "onPause()");
+
+        //Disconnect from API onPause()
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -468,6 +527,79 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             if (mGoogleApiClient.isConnected())
                 mGoogleApiClient.disconnect();
         }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (location == null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        } else {
+            //If everything went fine lets get latitude and longitude
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+//            SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
+            Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+            /*
+             * Google Play services can resolve some errors it detects.
+             * If the error has a resolution, try sending an Intent to
+             * start a Google Play services activity that can resolve
+             * error.
+             */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                    /*
+                     * Thrown if Google Play services canceled the original
+                     * PendingIntent
+                     */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+                /*
+                 * If no resolution is available, display a dialog to the
+                 * user with the error.
+                 */
+            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    /**
+     * If locationChanges change lat and long
+     *
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+
+        Toast.makeText(this, currentLatitude + " WORKS " + currentLongitude + "", Toast.LENGTH_LONG).show();
     }
 
 }

@@ -144,7 +144,10 @@ public class ReasonList_adapter extends BaseAdapter {
         }
 
         private void UploadDataJob() {
+            final Gson gson = new Gson();
             UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+            Log.d("Test", "getUploadHolder : " + gson.toJson(uploadHolder));
+
             if (CheckConnection() == -1) return;
             DataLink dataLink = AllFunction.BindingData();
             final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);

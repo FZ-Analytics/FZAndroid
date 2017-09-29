@@ -136,7 +136,7 @@
            android:visibility="invisible"/>
 
         <Button
-           style="@style/DefaultButton"
+           style="@style/DefaultGrayButton"
            android:text="@string/strBtnCancel"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
            android:layout_centerHorizontal="true"
            android:layout_marginTop="@dimen/padding_60"
            android:layout_gravity="center"
-           android:id="@+id/btnCancelGo"
+           android:id="@+id/btnEndDay"
            android:visibility="visible"/>
     </LinearLayout>
 

@@ -141,7 +141,7 @@ public class Planning extends AppCompatActivity {
         endEstimate = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd();
         AllFunction.storeToSharedPref(context, AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getJobID(), Preference.prefJobID);
         AllFunction.storeToSharedPref(context, AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTaskID(), Preference.prefTaskID);
-        AllFunction.storeToSharedPref(context, "DONE", Preference.prefDoneStatus);
+        AllFunction.storeToSharedPref(context, "ASGN", Preference.prefDoneStatus);
 
         String StartDate = getDate(startEstimate);
         String starTime = AllFunction.getTime(startEstimate);

@@ -674,7 +674,7 @@ public class AllFunction extends AppCompatActivity {
 
         AllUploadData.getInstance().setDatanya(uploadPlanData);
         final Gson gson = new Gson();
-        Log.d("Test", "onCreate: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
+        Log.d("Test", "getUploadData: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
 
 
     }
