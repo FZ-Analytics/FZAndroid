@@ -597,38 +597,6 @@ public class AllFunction extends AppCompatActivity {
         return dateConvert;
     }
 
-    public static String getDates(Date Date) {
-        Date tanggal = null;
-        String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
-
-//        try {
-//            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//            tanggal = form.parse(Date);
-//            dateConvert = df.format(tanggal);
-//
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-        return dateConvert;
-    }
-
-    public static String getTimes(Date time) {
-        Date tanggal = null;
-        String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
-
-//        try {
-//            tanggal = form.parse(time);
-//            DateFormat tf = new SimpleDateFormat("hh:mm:ss");
-//            dateConvert = tf.format(tanggal);
-//
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-        return dateConvert;
-    }
 
     public static int reductionDate(String start, String end) {
         Date startDate = null;

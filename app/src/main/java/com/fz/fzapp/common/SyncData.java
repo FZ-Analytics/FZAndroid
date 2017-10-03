@@ -112,7 +112,6 @@ public class SyncData extends AppCompatActivity {
                     Intent intent = new Intent(SyncData.this, Username.class);
                     startActivity(intent);
                    }
-
             }
 
             @Override

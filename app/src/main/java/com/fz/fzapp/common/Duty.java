@@ -56,6 +56,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -124,6 +126,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private double currentLatitude;
     private double currentLongitude;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,41 +138,33 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
-        RetriveContent();
-        GetLocation();
-
-    }
-
-    private void GetLocation() {
-        if(checkPlayServices())
-        {
+//        GetLocation();
+        if (AllFunction.CheckPermission(Duty.this, this)) {
+        }
+        if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
         }
 
-        long TimeTrackLocation = AllFunction.getLongFromSharedPref(context, Preference.prefTimeTrack);
+        long TimeTrackLocation = 300000;
+        Log.d("waktu", String.valueOf(TimeTrackLocation));
         TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
         TimerToTrackLocation.cancel();
-
-
         File fScr = new File("/data/data/com.fz.fzapp/databases/", "tasklist.sqlite");
 
-        if(fScr.exists())
-        {
+        if (fScr.exists()) {
             Toast.makeText(context, "File exists", Toast.LENGTH_LONG);
             File fDest = new File(Environment.getExternalStorageDirectory(), "tasklist.sqlite");
 
-            try
-            {
+            try {
                 copyToExternal(fScr, fDest);
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 // e.printStackTrace();
             }
         }
-    }
+        RetriveContent();
 
+    }
 
     private void RetriveContent() {
         calendar = Calendar.getInstance();
@@ -182,12 +177,12 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         String DestinationDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getBlocks();
         String timeEnd = AllFunction.getTime(timeEstimateDutty);
         AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualStart);
+
         try {
             Date startTime = form.parse(form.format(calendar.getTime()));
             Date endTime = form.parse(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd());
             diff = endTime.getTime() - startTime.getTime();
             if (diff < 0) {
-
                 countingUpTimer(diff);
             } else {
                 final long finalDiff = diff;
@@ -375,7 +370,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         return true;
     }
 
-    //
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -384,10 +378,97 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 .build();
     }
 
+    private class CountDownTimerToTrackLocation extends CountDownTimer {
+        public CountDownTimerToTrackLocation(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        public void onTick(long l) {
+            // Log.d(TAG, "seconds remaining -> " + l / 1000);
+        }
+
+        public void onFinish() {
+            TimerToTrackLocation.cancel();
+
+            try {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            } catch (SecurityException e) {
+                Log.d(TAG, "onFinish:");
+            }
+
+            if (mLastLocation != null)
+                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
+                        null, null, null);
+
+            TimerToTrackLocation.start();
+
+            if (mLastLocation != null) {
+//                Integer intConnect = AllFunction.isNetworkAvailable(context);
+                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
+                        null, null, null);
+            }
+        }
+    }
+
+    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
+        String strDate;
+        String strTime;
+        Log.d("heru", Longitude + Latitude);
+        Calendar calendar = Calendar.getInstance();
+
+        if (Date == null) {
+            strDate = df.format(calendar.getTime());
+            strTime = tf.format(calendar.getTime());
+        } else {
+            strDate = Date;
+            strTime = Time;
+        }
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.clear();
+
+        hashMap.put("Latitude", Latitude);
+        hashMap.put("Longitude", Longitude);
+        hashMap.put("Date", strDate);
+        hashMap.put("Time", strTime);
+
+        if (intConnect != null)
+            hashMap.put("Connection", String.valueOf(intConnect));
+
+        database_adapter.SaveTrackingData(hashMap);
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10);
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         startLocationUpdates();
         getCurrentLocation();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+//        TimerToTrackLocation.cancel();
+//        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
+//                null, null, null);
+        TimerToTrackLocation.start();
+    }
+
+    protected void startLocationUpdates() {
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } catch (SecurityException e) {
+            Toast.makeText(getApplicationContext(),
+                    context.getResources().getString(R.string.strStartLocation), Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     @Override
@@ -402,87 +483,58 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 .show();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        TimerToTrackLocation.cancel();
-        tvTrackTest.setText("Lat : " + String.valueOf(mLastLocation.getLatitude()) + ", Long : " + String.valueOf(mLastLocation.getLongitude()));
-        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
-        TimerToTrackLocation.start();
-    }
 
-    protected void startLocationUpdates()
-    {
-        try
-        {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        catch (SecurityException e)
-        {
-            Toast.makeText(getApplicationContext(),
-                    context.getResources().getString(R.string.strStartLocation), Toast.LENGTH_LONG)
-                    .show();
-        }
-    }
-
-    private boolean getCurrentLocation()
-    {
-        try
-        {
+    private boolean getCurrentLocation() {
+        try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Toast.makeText(getApplicationContext(), context.getResources().getString(R.string.strCurrentLocation),
                     Toast.LENGTH_LONG).show();
 
             return false;
         }
 
-        if(mLastLocation == null) return false;
+        if (mLastLocation == null) return false;
 
         return true;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.connect();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
-    private class CountDownTimerToTrackLocation extends CountDownTimer {
-        public CountDownTimerToTrackLocation(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
+    private boolean copyDatabase(Context context) {
+        try {
+            InputStream inputStream = context.getAssets().open(Database_adapter.databasename);
+            String strFile = Database_adapter.databaselocation + Database_adapter.databasename;
+            OutputStream outputStream = new FileOutputStream(strFile);
+            byte[] buff = new byte[1024];
+            int length = 0;
 
-        @Override
-        public void onTick(long l) {
-
-        }
-
-        public void onFinish() {
-            TimerToTrackLocation.cancel();
-
-            try {
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            } catch (SecurityException e) {
-                Log.d(TAG, "onFinish:");
+            while ((length = inputStream.read(buff)) > 0) {
+                outputStream.write(buff, 0, length);
             }
 
-            if (mLastLocation != null)
-                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()));
-
-            TimerToTrackLocation.start();
+            outputStream.flush();
+            outputStream.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, getResources().getString(R.string.strDatabaseFailed), Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(10);
-    }
-
-    public void copyToExternal(File src, File dst) throws IOException
-    {
+    public void copyToExternal(File src, File dst) throws IOException {
         FileInputStream inStream = new FileInputStream(src);
         FileOutputStream outStream = new FileOutputStream(dst);
         FileChannel inChannel = inStream.getChannel();
@@ -490,28 +542,5 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         inChannel.transferTo(0, inChannel.size(), outChannel);
         inStream.close();
         outStream.close();
-    }
-
-    private void SaveTrackToSQLite(String Latitude, String Longitude) {
-        int userID;
-        String endTime;
-        int TruckID;
-
-        endTime = curentTime();
-        userID = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
-        TruckID = AllFunction.getIntFromSharedPref(context, Preference.prefVehicleID);
-
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.clear();
-
-        hashMap.put("Latitude", Latitude);
-        hashMap.put("Longitude", Longitude);
-        hashMap.put("EndDate", endTime);
-        hashMap.put("UserID", String.valueOf(userID));
-        hashMap.put("TruckID", String.valueOf(TruckID));
-        Log.d(TAG, "SaveTrackToSQLite: " + Latitude + ":" + Longitude);
-
-
     }
 }
