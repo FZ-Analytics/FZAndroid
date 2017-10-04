@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     // Database Name
     private static final String DATABASE_NAME = "trackingUploadDataBase";
@@ -55,7 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_END_TIME + " TEXT"
                 + KEY_USER_ID + " INTEGER PRIMARY KEY,"
                 + KEY_VEHICLE_ID + " INTEGER,"
-                + KEY_STATUS + " INTEGER" + ");";
+                + KEY_STATUS + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
