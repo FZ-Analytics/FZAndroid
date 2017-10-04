@@ -16,7 +16,8 @@ public class Database_adapter extends SQLiteOpenHelper
 {
   static String TAG = "[AdapterDatabase]";
   public static final String databasename = "tasklist.sqlite";
-  public static final String databaselocation = "/data/data/com.fz.fzapp/databases/";
+//  public static final String databaselocation = "/data/data/com.fz.fzapp/databases/";
+public static final String databaselocation = "/storage/emulated/0";
 
   public static final String LocationTable = "tracking";
   public static final String ReportTable = "trxtasklist";
@@ -56,7 +57,7 @@ public class Database_adapter extends SQLiteOpenHelper
       values.put("Longitude", TrackingData.get("Longitude"));
       values.put("EndDate", TrackingData.get("EndDate"));
       values.put("UserID", TrackingData.get("UserID"));
-      values.put("TruckID", TrackingData.get("TruckID"));
+      values.put("VehicleID", TrackingData.get("VehicleID"));
       lNewPos = sqlDatabase.insert(LocationTable, null, values);
 
       sqlDatabase.setTransactionSuccessful();

@@ -1,76 +1,75 @@
 package com.fz.fzapp.data;
 
-/**
- * Dibuat oleh : ignat
- * Tanggal : 25-Jul-17
- * HP/WA : 0857 7070 6 777
- */
-public class TrackingTrx
-{
-  private int LocationID;
-  private String Latitude;
-  private String Longitude;
-  private String Date;
-  private String Time;
-  private int Status;
+public class TrackingTrx {
 
-  public int getLocationID()
-  {
-    return LocationID;
-  }
+    private String Latitude;
+    private String Longitude;
+    private String EndDate;
+    private int UserID;
+    private int VehicleID;
+    private int Status;
 
-  public void setLocationID(int locationID)
-  {
-    LocationID = locationID;
-  }
+    public TrackingTrx( String Latitude, String Longitude, String EndDate, int UserID, int VehicleID, int Status) {
 
-  public String getLatitude()
-  {
-    return Latitude;
-  }
+        this.Latitude = Latitude;
+        this.Longitude = Longitude;
+        this.EndDate = EndDate;
+        this.UserID = UserID;
+        this.VehicleID = VehicleID;
+        this.Status = Status;
 
-  public void setLatitude(String latitude)
-  {
-    Latitude = latitude;
-  }
+    }
 
-  public String getLongitude()
-  {
-    return Longitude;
-  }
+    public TrackingTrx() {
+    }
 
-  public void setLongitude(String longitude)
-  {
-    Longitude = longitude;
-  }
 
-  public String getDate()
-  {
-    return Date;
-  }
+    public String getLatitude() {
+        return Latitude;
+    }
 
-  public void setDate(String date)
-  {
-    Date = date;
-  }
 
-  public String getTime()
-  {
-    return Time;
-  }
+    public void setLatitude(String latitude) {
+        Latitude = latitude;
+    }
 
-  public void setTime(String time)
-  {
-    Time = time;
-  }
+    public String getLongitude() {
+        return Longitude;
+    }
 
-  public int getStatus()
-  {
-    return Status;
-  }
+    public void setLongitude(String longitude) {
+        Longitude = longitude;
+    }
 
-  public void setStatus(int status)
-  {
-    Status = status;
-  }
+    public String getEndDate() {
+        return EndDate;
+    }
+
+    public void setEndDate(String endDate) {
+        EndDate = endDate;
+    }
+
+    public int getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(int userID) {
+        UserID = userID;
+    }
+
+    public int getVehicleID() {
+        return VehicleID;
+    }
+
+    public void setVehicleID(int vehicleID) {
+        VehicleID = vehicleID;
+    }
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int status) {
+        Status = status;
+    }
 }

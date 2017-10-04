@@ -40,14 +40,14 @@
            android:layout_alignLeft="@+id/textView"
            android:layout_alignStart="@+id/textView"/>
 
-        <ImageView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:background="@drawable/ic_other_menu"
-           android:layout_alignParentTop="true"
-           android:layout_alignRight="@+id/splitter"
-           android:layout_alignEnd="@+id/splitter"
-           android:id="@+id/ivOtherMenu"/>
+        <!--<ImageView-->
+           <!--android:layout_width="wrap_content"-->
+           <!--android:layout_height="wrap_content"-->
+           <!--android:background="@drawable/ic_other_menu"-->
+           <!--android:layout_alignParentTop="true"-->
+           <!--android:layout_alignRight="@+id/splitter"-->
+           <!--android:layout_alignEnd="@+id/splitter"-->
+           <!--android:id="@+id/ivOtherMenu"/>-->
 
     </RelativeLayout>
     <LinearLayout

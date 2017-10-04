@@ -41,9 +41,6 @@ public interface DataLink
   @POST(FixValue.RestfulLogin)
   Call<LoginPojo> LoginService(@Body UserHolder userHolder);
 
-//  @POST(FixValue.RestfulLogout)
-//  Call<LoginPojo> LogoutService(@Body UserHolder loginHolder);
-
   @POST(FixValue.RestfulChangePassword)
   Call<LoginPojo> ChangePasswordService(@Body UserHolder userHolder);
 
@@ -65,6 +62,7 @@ public interface DataLink
   @POST(FixValue.RestfulLogout)
   Call<LogoutPojo> LogoutService(@Body LogoutHolder logoutHolder);
 
-
+  @POST(FixValue.RestfulLogout)
+  Call<LogoutPojo> TrackingData(@Body LogoutHolder logoutHolder);
 }
 

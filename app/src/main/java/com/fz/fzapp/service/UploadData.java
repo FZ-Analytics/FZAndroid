@@ -159,12 +159,13 @@ public class UploadData extends AsyncTask<String, Void, String>
     else
     if(TableName.trim() == "tracking")
     {
-      trackingTrx.setLocationID(SyncID);
-      trackingTrx.setLatitude(cursor.getString(1));
-      trackingTrx.setLongitude(cursor.getString(2));
-      trackingTrx.setDate(cursor.getString(3));
-      trackingTrx.setTime(cursor.getString(4));
-      trackingTrx.setStatus(cursor.getInt(5));
+      //cek
+//      trackingTrx.setLatitude(cursor.getString(1));
+//      trackingTrx.setLongitude(cursor.getString(2));
+//      trackingTrx.setEndDate(cursor.getString(3));
+//      trackingTrx.setUserID(cursor.getString(4));
+//      trackingTrx.setVehicleID(cursor.getString(5));
+//      trackingTrx.setStatus(cursor.getInt(6));
 
       taskListTrx = null;
     }

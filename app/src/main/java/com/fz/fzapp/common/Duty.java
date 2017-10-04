@@ -1,22 +1,16 @@
 package com.fz.fzapp.common;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -33,12 +27,14 @@ import com.fz.fzapp.R;
 import com.fz.fzapp.adapter.AllTaskList_adapter;
 import com.fz.fzapp.adapter.Database_adapter;
 import com.fz.fzapp.data.AllUploadData;
-import com.fz.fzapp.data.UploadPlanData;
+import com.fz.fzapp.data.TrackingTrx;
 //import com.fz.fzapp.data.UploadRespone;
 import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.sending.UploadHolder;
 import com.fz.fzapp.service.AllFunction;
 import com.fz.fzapp.service.DataLink;
+import com.fz.fzapp.service.UploadData;
+import com.fz.fzapp.utils.DatabaseHandler;
 import com.fz.fzapp.utils.FixValue;
 import com.fz.fzapp.utils.PopupMessege;
 import com.fz.fzapp.utils.Preference;
@@ -49,7 +45,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.nearby.messages.Message;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -59,18 +54,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Duty extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -126,6 +116,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private double currentLatitude;
     private double currentLongitude;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private int countId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +137,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             createLocationRequest();
         }
 
-        long TimeTrackLocation = 300000;
+        long TimeTrackLocation = 1000;
         Log.d("waktu", String.valueOf(TimeTrackLocation));
         TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
         TimerToTrackLocation.cancel();
@@ -159,7 +150,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             try {
                 copyToExternal(fScr, fDest);
             } catch (IOException e) {
-                // e.printStackTrace();
+                e.printStackTrace();
             }
         }
         RetriveContent();
@@ -252,6 +243,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnDutyFails:
+                TimerToTrackLocation.onFinish();
                 getReasonId = 1;
                 AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                 //Keluar dari job
@@ -266,6 +258,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             case R.id.btnDutyDone:
                 AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
                 if (onDuty != 2) {
+
                     getReasonId = 0;
                     //Telat
                     if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
@@ -276,6 +269,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                         getUpload();
 
                     } else {
+                        TimerToTrackLocation.onFinish();
                         //Succses and half job
                         AllFunction.uploadSync(0, context);
                         AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
@@ -284,6 +278,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                         finish();
                     }
                 } else {
+                    TimerToTrackLocation.onFinish();
                     getReasonId = 2;
                     AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                     //Late
@@ -302,6 +297,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         final Gson gson = new Gson();
         UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
         Log.d("Test", "getUploadHolder: " + gson.toJson(uploadHolder));
+
         if (CheckConnection() == -1) return;
         DataLink dataLink = AllFunction.BindingData();
         final Call<UploadPojo> ReceiveUpload = dataLink.uploadService(uploadHolder);
@@ -309,8 +305,10 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
                 if (response.isSuccessful()) {
+                    TimerToTrackLocation.onFinish();
                     Intent SyncIntent = new Intent(context, SyncData.class);
                     context.startActivity(SyncIntent);
+//                    onProcessSyncData();
                     activity.finish();
                 } else {
                     Toast.makeText(context, "Check Your Connection", Toast.LENGTH_LONG).show();
@@ -324,6 +322,15 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             }
         });
     }
+
+//    private void onProcessSyncData() {
+//        HashMap<String, String> listSyncTable = new HashMap<>();
+//        listSyncTable.clear();
+//
+//        listSyncTable.put("Tracking", "tracking");
+//
+//        new UploadData(activity, context, listSyncTable).execute();
+//    }
 
     private Integer CheckConnection() {
         if (AllFunction.isNetworkAvailable(context) == FixValue.TYPE_NONE) {
@@ -411,32 +418,50 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
-        String strDate;
-        String strTime;
-        Log.d("heru", Longitude + Latitude);
-        Calendar calendar = Calendar.getInstance();
+        DatabaseHandler db = new DatabaseHandler(this);
+        String strEndTime = curentTime();
+        int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+        int vehicleId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+        int statTracking = 0;
+        Log.d("Insert: ", "Inserting ..");
+//        countId = countId + 1;
+        db.addTracking(new TrackingTrx( Latitude, Longitude, strEndTime, userId, vehicleId, statTracking));
 
-        if (Date == null) {
-            strDate = df.format(calendar.getTime());
-            strTime = tf.format(calendar.getTime());
-        } else {
-            strDate = Date;
-            strTime = Time;
+        // Reading all contacts
+        Log.d("Reading: ", "Reading all contacts..");
+        List<TrackingTrx> trackingList = db.getAllTracking();
+
+        for (TrackingTrx trackingData : trackingList) {
+            String log =  "Latitude: " + trackingData.getLatitude() + " ,Longtitude: " + trackingData.getLongitude() + " ,EndTime: "
+                    + trackingData.getEndDate() + "UserId: " + trackingData.getUserID() + "vehicle id: " + trackingData.getVehicleID()
+                    + trackingData.getEndDate() + "status: " + trackingData.getStatus();
+            // Writing Contacts to log
+            Log.d("Anjing: ", log);
+            Toast.makeText(context,log,Toast.LENGTH_LONG);
+
         }
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.clear();
-
-        hashMap.put("Latitude", Latitude);
-        hashMap.put("Longitude", Longitude);
-        hashMap.put("Date", strDate);
-        hashMap.put("Time", strTime);
-
-        if (intConnect != null)
-            hashMap.put("Connection", String.valueOf(intConnect));
-
-        database_adapter.SaveTrackingData(hashMap);
     }
+
+//    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
+//        String strEndTime = curentTime();
+//        int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+//        int vehicleId = AllFunction.getIntFromSharedPref(context,Preference.prefUserID);
+//
+//
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.clear();
+//
+//        Log.d("Woi", Latitude+" * "+Longitude+" * "+userId+" * "+vehicleId+" * "+strEndTime);
+//        hashMap.put("Latitude", Latitude);
+//        hashMap.put("Longitude", Longitude);
+//        hashMap.put("EndDate", strEndTime);
+//        hashMap.put("UserID", String.valueOf(userId));
+//        hashMap.put("VehicleID", String.valueOf(vehicleId));
+//        if (intConnect != null)
+//            hashMap.put("Connection", String.valueOf(intConnect));
+//
+//        database_adapter.SaveTrackingData(hashMap);
+//    }
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();

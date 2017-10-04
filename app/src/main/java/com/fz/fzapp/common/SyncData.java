@@ -35,8 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class SyncData extends AppCompatActivity {
-    @BindView(R.id.ivOtherMenu)
-    ImageView ivOtherMenu;
+//    @BindView(R.id.ivOtherMenu)
+//    ImageView ivOtherMenu;
     @BindView(R.id.tvMsg)
     TextView tvMsg;
     @BindView(R.id.tvNotifeSync)
@@ -72,7 +72,7 @@ public class SyncData extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    @OnClick({R.id.ivOtherMenu, R.id.ivGo,R.id.btnCancelGo})
+    @OnClick({ R.id.ivGo,R.id.btnCancelGo})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivGo:

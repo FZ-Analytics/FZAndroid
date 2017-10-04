@@ -48,7 +48,7 @@ public class Username extends AppCompatActivity
         Database_adapter DataBaseTasklist = new Database_adapter(this);
         DataBaseTasklist.getReadableDatabase();
 
-        if(!copyDatabase(this)) return;
+//        if(!copyDatabase(this)) return;
       }
     }
 
