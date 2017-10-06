@@ -105,6 +105,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private CountDownTimerToTrackLocation TimerToTrackLocation;
+
     private long startTimes = 0L;
     long timeInMillies = 0L;
     long timeSwap = 0L;
@@ -150,7 +151,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             try {
                 copyToExternal(fScr, fDest);
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
         }
         RetriveContent();
@@ -243,7 +244,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnDutyFails:
-                TimerToTrackLocation.onFinish();
                 getReasonId = 1;
                 AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                 //Keluar dari job
@@ -253,6 +253,8 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 ReasonIntent.putExtra("onDuty", onDuty);
                 ReasonIntent.putExtra("onActivityJump", onActivityJump);
                 startActivity(ReasonIntent);
+                UploadFinishJob();
+                TimerToTrackLocation.cancel();
                 finish();
                 break;
             case R.id.btnDutyDone:
@@ -264,21 +266,20 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
                         AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                         //Success and once job
-                        popupMessege.ShowMessege1(context, "upload");
                         AllFunction.uploadSync(0, context);
-                        getUpload();
+                        TimerToTrackLocation.onFinish();
+                        UploadFinishJob();
 
                     } else {
-                        TimerToTrackLocation.onFinish();
                         //Succses and half job
                         AllFunction.uploadSync(0, context);
                         AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
                         Intent planningIntent = new Intent(Duty.this, Planning.class);
                         startActivity(planningIntent);
+                        TimerToTrackLocation.onFinish();
                         finish();
                     }
                 } else {
-                    TimerToTrackLocation.onFinish();
                     getReasonId = 2;
                     AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                     //Late
@@ -287,13 +288,14 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     ReasonIntents.putExtra("onActivityJump", onActivityJump);
                     ReasonIntents.putExtra("onDuty", onDuty);
                     startActivity(ReasonIntents);
+                    TimerToTrackLocation.onFinish();
                     finish();
                 }
                 break;
         }
     }
 
-    public void getUpload() {
+    public void UploadFinishJob() {
         final Gson gson = new Gson();
         UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
         Log.d("Test", "getUploadHolder: " + gson.toJson(uploadHolder));
@@ -305,10 +307,9 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
                 if (response.isSuccessful()) {
-                    TimerToTrackLocation.onFinish();
                     Intent SyncIntent = new Intent(context, SyncData.class);
                     context.startActivity(SyncIntent);
-//                    onProcessSyncData();
+                    onProcessSyncData();
                     activity.finish();
                 } else {
                     Toast.makeText(context, "Check Your Connection", Toast.LENGTH_LONG).show();
@@ -323,14 +324,14 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         });
     }
 
-//    private void onProcessSyncData() {
-//        HashMap<String, String> listSyncTable = new HashMap<>();
-//        listSyncTable.clear();
-//
-//        listSyncTable.put("Tracking", "tracking");
-//
-//        new UploadData(activity, context, listSyncTable).execute();
-//    }
+    private void onProcessSyncData() {
+        HashMap<String, String> listSyncTable = new HashMap<>();
+        listSyncTable.clear();
+
+        listSyncTable.put("tracking", "tracking");
+
+        new UploadData(activity, context, listSyncTable).execute();
+    }
 
     private Integer CheckConnection() {
         if (AllFunction.isNetworkAvailable(context) == FixValue.TYPE_NONE) {
@@ -417,51 +418,54 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
+//    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
+//        DatabaseHandler db = new DatabaseHandler(this);
+//        String strEndTime = curentTime();
+//        int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+//        int vehicleId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
+//        int statTracking = 0;
+//        Log.d("Insert: ", "Inserting ..");
+//        db.addTracking(new TrackingTrx( Latitude, Longitude, strEndTime, userId, vehicleId, statTracking));
+//        Log.d("Woi", Latitude+" * "+Longitude+" * "+userId+" * "+vehicleId+" * "+strEndTime);
+//
+//        // Reading all contacts
+//        Log.d("Reading: ", "Reading all contacts..");
+//        List<TrackingTrx> trackingList = db.getAllContacts();
+//        for (TrackingTrx trackingData : trackingList) {
+//            String log =  "Latitude: " + trackingData.getLatitude() + " ,Longtitude: " + trackingData.getLongitude() + " ,EndTime: "
+//                    + trackingData.getEndDate() + "UserId: " + trackingData.getUserID() + "vehicle id: " + trackingData.getVehicleID()
+//                    + trackingData.getEndDate() + "status: " + trackingData.getStatus();
+//            // Writing Contacts to log
+//            Log.d("Log: ", log);
+//            Log.d("Counting : ", String.valueOf(countId));
+//
+//            Toast.makeText(context,log,Toast.LENGTH_LONG);
+//
+//        }
+//    }
+
     private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
-        DatabaseHandler db = new DatabaseHandler(this);
         String strEndTime = curentTime();
         int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
         int vehicleId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
-        int statTracking = 0;
-        Log.d("Insert: ", "Inserting ..");
-//        countId = countId + 1;
-        db.addTracking(new TrackingTrx( Latitude, Longitude, strEndTime, userId, vehicleId, statTracking));
 
-        // Reading all contacts
-        Log.d("Reading: ", "Reading all contacts..");
-        List<TrackingTrx> trackingList = db.getAllTracking();
 
-        for (TrackingTrx trackingData : trackingList) {
-            String log =  "Latitude: " + trackingData.getLatitude() + " ,Longtitude: " + trackingData.getLongitude() + " ,EndTime: "
-                    + trackingData.getEndDate() + "UserId: " + trackingData.getUserID() + "vehicle id: " + trackingData.getVehicleID()
-                    + trackingData.getEndDate() + "status: " + trackingData.getStatus();
-            // Writing Contacts to log
-            Log.d("Anjing: ", log);
-            Toast.makeText(context,log,Toast.LENGTH_LONG);
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.clear();
 
-        }
+        Log.d("Woi", Latitude + " * " + Longitude + " * " + userId + " * " + vehicleId + " * " + strEndTime);
+        hashMap.put("Latitude", Latitude);
+        hashMap.put("Longitude", Longitude);
+        hashMap.put("EndDate", strEndTime);
+        hashMap.put("UserID", String.valueOf(userId));
+        hashMap.put("VehicleID", String.valueOf(vehicleId));
+        hashMap.put("Status", String.valueOf(0));
+
+        if (intConnect != null)
+            hashMap.put("Connection", String.valueOf(intConnect));
+
+        database_adapter.SaveTrackingData(hashMap);
     }
-
-//    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
-//        String strEndTime = curentTime();
-//        int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
-//        int vehicleId = AllFunction.getIntFromSharedPref(context,Preference.prefUserID);
-//
-//
-//        HashMap<String, String> hashMap = new HashMap<>();
-//        hashMap.clear();
-//
-//        Log.d("Woi", Latitude+" * "+Longitude+" * "+userId+" * "+vehicleId+" * "+strEndTime);
-//        hashMap.put("Latitude", Latitude);
-//        hashMap.put("Longitude", Longitude);
-//        hashMap.put("EndDate", strEndTime);
-//        hashMap.put("UserID", String.valueOf(userId));
-//        hashMap.put("VehicleID", String.valueOf(vehicleId));
-//        if (intConnect != null)
-//            hashMap.put("Connection", String.valueOf(intConnect));
-//
-//        database_adapter.SaveTrackingData(hashMap);
-//    }
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -480,10 +484,10 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-//        TimerToTrackLocation.cancel();
+        TimerToTrackLocation.cancel();
 //        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
 //                null, null, null);
-        TimerToTrackLocation.start();
+//        TimerToTrackLocation.start();
     }
 
     protected void startLocationUpdates() {
