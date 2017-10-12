@@ -31,6 +31,11 @@ public class UploadPlanData {
     @Expose
     private Integer reasonID;
 
+    @SerializedName("VehicleID")
+    @Expose
+    private Integer VehicleID;
+
+
     public Integer getJobID() {
         return jobID;
     }
@@ -85,5 +90,13 @@ public class UploadPlanData {
 
     public void setReasonID(Integer reasonID) {
         this.reasonID = reasonID;
+    }
+
+    public Integer getVehicleID() {
+        return VehicleID;
+    }
+
+    public void setVehicleID(Integer vehicleID) {
+        VehicleID = vehicleID;
     }
 }

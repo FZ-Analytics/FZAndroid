@@ -68,12 +68,12 @@ public class SaveToSQLite
 		hashMap.put("Notes", Notes);
 
 		Database_adapter adapter_database = new Database_adapter(context);
-		if(adapter_database.SaveReportData(hashMap))
-		{
-			AllFunction.storeToSharedPref(context, TaskNo + 1, Preference.prefDutyTask);
-			Intent RecapIntent = new Intent(activity, Recap.class);
-			context.startActivity(RecapIntent);
-			activity.finish();
-		}
+//		if(adapter_database.SaveReportData(hashMap))
+//		{
+//			AllFunction.storeToSharedPref(context, TaskNo + 1, Preference.prefDutyTask);
+//			Intent RecapIntent = new Intent(activity, Recap.class);
+//			context.startActivity(RecapIntent);
+//			activity.finish();
+//		}
 	}
 }

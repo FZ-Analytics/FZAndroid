@@ -3,12 +3,14 @@ package com.fz.fzapp.service;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fz.fzapp.R;
 import com.fz.fzapp.adapter.Database_adapter;
+import com.fz.fzapp.common.SyncData;
 import com.fz.fzapp.data.TaskListTrx;
 import com.fz.fzapp.data.TrackingTrx;
 import com.fz.fzapp.pojo.LoginPojo;
@@ -44,9 +46,9 @@ public class UploadData extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(context, context.getResources().getString(R.string.strWait), context.getResources().getString(R.string.strSyncProgress));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+//        progressDialog = ProgressDialog.show(context, context.getResources().getString(R.string.strWait), context.getResources().getString(R.string.strSyncProgress));
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
 
         adapter_database = new Database_adapter(context);
     }
@@ -110,9 +112,9 @@ public class UploadData extends AsyncTask<String, Void, String> {
 //        progressDialog.dismiss();
 //        popupMessege.ShowMessege1(context, results);
 
-//    Intent UploadIntent = new Intent(activity, SyncData.class);
-//    context.startActivity(UploadIntent);
-//    activity.finish();
+    Intent UploadIntent = new Intent(activity, SyncData.class);
+    context.startActivity(UploadIntent);
+    activity.finish();
     }
 
     private int TransferSynDataToServer(String TableName, Cursor cursor, Database_adapter adapter_database) {

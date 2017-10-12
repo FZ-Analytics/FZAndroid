@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class SyncData extends AppCompatActivity {
-//    @BindView(R.id.ivOtherMenu)
+    //    @BindView(R.id.ivOtherMenu)
 //    ImageView ivOtherMenu;
     @BindView(R.id.tvMsg)
     TextView tvMsg;
@@ -72,7 +73,7 @@ public class SyncData extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    @OnClick({ R.id.ivGo,R.id.btnCancelGo})
+    @OnClick({R.id.ivGo, R.id.btnCancelGo})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivGo:
@@ -106,12 +107,13 @@ public class SyncData extends AppCompatActivity {
         ReceiveLogout.enqueue(new Callback<LogoutPojo>() {
             @Override
             public void onResponse(Call<LogoutPojo> call, Response<LogoutPojo> response) {
+                Log.d("TaskList", response.body().getCoreResponse().getMsg() + response.body().getCoreResponse().getCode());
                 if (response.body().getCoreResponse().getCode() != FixValue.intSuccess)
                     ProccessWait(response.body().getCoreResponse().getMsg());
                 else if (response.body().getCoreResponse().getCode() == FixValue.intSuccess) {
                     Intent intent = new Intent(SyncData.this, Username.class);
                     startActivity(intent);
-                   }
+                }
             }
 
             @Override

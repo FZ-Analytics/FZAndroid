@@ -1,30 +1,50 @@
 package com.fz.fzapp.utils;
 
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 
 /**
  * Created by Agustinus Ignat on 19-Sep-17.
  */
-public abstract class CountUpTimer extends CountDownTimer
+public abstract class CountUpTimer
 {
-  private static final long INTERVAL_MS = 1000;
-  private final long duration;
 
-  protected CountUpTimer(long durationMs) {
-    super(durationMs, INTERVAL_MS);
-    this.duration = durationMs;
+  private final long interval;
+  private long base;
+
+  public CountUpTimer(long interval) {
+    this.interval = interval;
   }
 
-  public abstract void onTick(int second);
-
-  @Override
-  public void onTick(long msUntilFinished) {
-    int second = (int) ((duration - msUntilFinished) / 1000);
-    onTick(second);
+  public void start() {
+    base = SystemClock.elapsedRealtime();
+    handler.sendMessage(handler.obtainMessage(MSG));
   }
 
-  @Override
-  public void onFinish() {
-    onTick(duration / 1000);
+  public void stop() {
+    handler.removeMessages(MSG);
   }
+
+  public void reset() {
+    synchronized (this) {
+      base = SystemClock.elapsedRealtime();
+    }
+  }
+
+  abstract public void onTick(long elapsedTime);
+
+  private static final int MSG = 1;
+
+  private Handler handler = new Handler() {
+    @Override
+    public void handleMessage(Message msg) {
+      synchronized (CountUpTimer.this) {
+        long elapsedTime = SystemClock.elapsedRealtime() - base;
+        onTick(elapsedTime);
+        sendMessageDelayed(obtainMessage(MSG), interval);
+      }
+    }
+  };
 }

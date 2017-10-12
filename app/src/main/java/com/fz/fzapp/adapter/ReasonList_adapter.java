@@ -37,6 +37,7 @@ import com.fz.fzapp.utils.SaveToSQLite;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -158,11 +159,11 @@ public class ReasonList_adapter extends BaseAdapter {
                         String msg = response.body().getCoreResponse().getMsg();
                         Intent SyncIntent = new Intent(mContext, SyncData.class);
                         mContext.startActivity(SyncIntent);
+                        onProcessSyncData();
                         activity.finish();
                     } else {
                         setAllOff(mContext.getResources().getString(R.string.msgServerData));
                         Toast.makeText(mContext, "Check Your Connection", Toast.LENGTH_LONG).show();
-
                     }
                 }
 
@@ -183,10 +184,19 @@ public class ReasonList_adapter extends BaseAdapter {
         }
 
         private void setAllOff(String strMsg) {
-////            tvMsg.setText(context.getResources().getString(R.string.titleKlik));
+////          tvMsg.setText(context.getResources().getString(R.string.titleKlik));
 //            ivGo.setBackgroundResource(R.drawable.buttonthick);
 //            popupMessege.ShowMessege1(mContext, strMsg);
         }
+    }
+
+    private static void onProcessSyncData() {
+        HashMap<String, String> listSyncTable = new HashMap<>();
+        listSyncTable.clear();
+
+        listSyncTable.put("tracking", "tracking");
+
+        new UploadData(activity, mContext, listSyncTable).execute();
     }
 
 

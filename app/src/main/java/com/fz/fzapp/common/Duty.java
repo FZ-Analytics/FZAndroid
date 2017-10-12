@@ -87,6 +87,8 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     LinearLayout borderLayout1;
     @BindView(R.id.borderLayout2)
     LinearLayout borderLayout2;
+    @BindView(R.id.splitter)
+    View splitter;
 
     private PopupMessege popupMessege = new PopupMessege();
 
@@ -105,7 +107,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private CountDownTimerToTrackLocation TimerToTrackLocation;
-
+    long diff = 0;
     private long startTimes = 0L;
     long timeInMillies = 0L;
     long timeSwap = 0L;
@@ -114,10 +116,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     int getReasonId;
     private Handler myHandler = new Handler();
     SimpleDateFormat form;
-    private double currentLatitude;
-    private double currentLongitude;
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private int countId = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +124,8 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         setContentView(R.layout.duty_lay);
         ButterKnife.bind(this);
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
-        form = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        tf = new SimpleDateFormat("k:mm:ss", Locale.US);
+        form = new SimpleDateFormat("yyyy-mm-dd k:mm:ss", Locale.US);
 
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
@@ -138,10 +137,10 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             createLocationRequest();
         }
 
-        long TimeTrackLocation = 1000;
+        long TimeTrackLocation = AllFunction.getIntFromSharedPref(context, Preference.prefVTimeTrackLocation);
         Log.d("waktu", String.valueOf(TimeTrackLocation));
         TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
-        TimerToTrackLocation.cancel();
+        TimerToTrackLocation.start();
         File fScr = new File("/data/data/com.fz.fzapp/databases/", "tasklist.sqlite");
 
         if (fScr.exists()) {
@@ -161,12 +160,12 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private void RetriveContent() {
         calendar = Calendar.getInstance();
         String timeDutty = null;
-        long diff = 0;
+
         int CountingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
         timeDutty = tf.format(calendar.getTime());
         String timeEstimateDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd();
         String StartDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getFrom();
-        String DestinationDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getBlocks();
+        String DestinationDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTo();
         String timeEnd = AllFunction.getTime(timeEstimateDutty);
         AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualStart);
 
@@ -177,21 +176,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             if (diff < 0) {
                 countingUpTimer(diff);
             } else {
-                final long finalDiff = diff;
-                new CountDownTimer(finalDiff, 1000) { // adjust the milli seconds here
-                    public void onTick(long diff) {
-                        tvTimer.setText(String.format("%02d:%02d:%02d",
-                                TimeUnit.MILLISECONDS.toHours(diff),
-                                TimeUnit.MILLISECONDS.toMinutes(diff) -
-                                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(diff)),
-                                TimeUnit.MILLISECONDS.toSeconds(diff) -
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff))));
-                    }
-
-                    public void onFinish() {
-                        countingUpTimer(finalDiff);
-                    }
-                }.start();
+                countingDownTimer(diff);
             }
 
         } catch (Exception e) {
@@ -203,27 +188,41 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         tvtimeEstimateDutty.setText(timeEnd);
     }
 
+    private void countingDownTimer(long diff) {
+        final long finalDiff = diff;
+        new CountDownTimer(finalDiff, 1000) { // adjust the milli seconds here
+            public void onTick(long diff) {
+                tvTimer.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(diff),
+                        TimeUnit.MILLISECONDS.toMinutes(diff) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(diff)),
+                        TimeUnit.MILLISECONDS.toSeconds(diff) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(diff))));
+            }
+
+            public void onFinish() {
+                countingUpTimer(finalDiff);
+            }
+        }.start();
+    }
+
     private void countingUpTimer(long absDif) {
         onDuty = 2;
         ivGo.setImageResource(R.drawable.circle_red);
+//        frontDutty.setBackgroundResource(R.color.red);
         borderLayout1.setBackgroundResource(R.drawable.border_red);
         borderLayout2.setBackgroundResource(R.drawable.border_red);
         tvTimer.setTextColor(context.getResources().getColor(R.color.red));
-        startTimes = Math.abs(absDif);
+        splitter.setBackgroundResource(R.color.red);
+        startTimes = SystemClock.uptimeMillis();
         myHandler.postDelayed(updateTimerMethod, 0);
     }
 
     private Runnable updateTimerMethod = new Runnable() {
 
         public void run() {
-            timeInMillies = SystemClock.uptimeMillis() - startTimes;
+            timeInMillies = SystemClock.uptimeMillis() - startTimes - diff;
             finalTime = timeSwap + timeInMillies;
-
-            int seconds = (int) (startTimes / 1000);
-            int minutes = seconds / 60;
-            int hour = minutes / 60;
-            seconds = seconds % 60;
-
             tvTimer.setText(String.format("%02d:%02d:%02d",
                     TimeUnit.MILLISECONDS.toHours(finalTime),
                     TimeUnit.MILLISECONDS.toMinutes(finalTime) -
@@ -245,6 +244,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         switch (view.getId()) {
             case R.id.btnDutyFails:
                 getReasonId = 1;
+//                UploadFinishJob();
                 AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                 //Keluar dari job
                 AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
@@ -253,7 +253,6 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 ReasonIntent.putExtra("onDuty", onDuty);
                 ReasonIntent.putExtra("onActivityJump", onActivityJump);
                 startActivity(ReasonIntent);
-                UploadFinishJob();
                 TimerToTrackLocation.cancel();
                 finish();
                 break;
@@ -267,7 +266,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                         AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
                         //Success and once job
                         AllFunction.uploadSync(0, context);
-                        TimerToTrackLocation.onFinish();
+                        TimerToTrackLocation.cancel();
                         UploadFinishJob();
 
                     } else {
@@ -276,7 +275,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                         AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
                         Intent planningIntent = new Intent(Duty.this, Planning.class);
                         startActivity(planningIntent);
-                        TimerToTrackLocation.onFinish();
+                        TimerToTrackLocation.cancel();
                         finish();
                     }
                 } else {
@@ -288,7 +287,8 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                     ReasonIntents.putExtra("onActivityJump", onActivityJump);
                     ReasonIntents.putExtra("onDuty", onDuty);
                     startActivity(ReasonIntents);
-                    TimerToTrackLocation.onFinish();
+                    TimerToTrackLocation.cancel()
+                    ;
                     finish();
                 }
                 break;
@@ -307,6 +307,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
                 if (response.isSuccessful()) {
+                    Log.d("UploadTask", String.valueOf(response));
                     Intent SyncIntent = new Intent(context, SyncData.class);
                     context.startActivity(SyncIntent);
                     onProcessSyncData();
@@ -327,9 +328,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private void onProcessSyncData() {
         HashMap<String, String> listSyncTable = new HashMap<>();
         listSyncTable.clear();
-
         listSyncTable.put("tracking", "tracking");
-
         new UploadData(activity, context, listSyncTable).execute();
     }
 
@@ -410,11 +409,11 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 
             TimerToTrackLocation.start();
 
-            if (mLastLocation != null) {
-//                Integer intConnect = AllFunction.isNetworkAvailable(context);
-                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
-                        null, null, null);
-            }
+//            if (mLastLocation != null) {
+////                Integer intConnect = AllFunction.isNetworkAvailable(context);
+//                SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
+//                        null, null, null);
+//            }
         }
     }
 
@@ -484,7 +483,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        TimerToTrackLocation.cancel();
+//        TimerToTrackLocation.cancel();
 //        SaveTrackToSQLite(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()),
 //                null, null, null);
 //        TimerToTrackLocation.start();

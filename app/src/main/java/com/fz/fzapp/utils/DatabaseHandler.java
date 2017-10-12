@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.fz.fzapp.data.TrackingTrx;
 
@@ -19,13 +20,13 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
-    private static final String DATABASE_NAME = "trackingUploadDataBase";
+    private static final String DATABASE_NAME = "trackingData";
 
 
-    private static final String TABLE_TRACKING_DATA = "trackingTable";
+    private static final String TABLE_TRACKING_DATA = "tracking";
 
     // trackings Table Columns names
 
@@ -52,15 +53,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TABLE_TRACKING_DATA + "("
                 + KEY_LATITUDE + " TEXT,"
                 + KEY_LONGTITUDE + " TEXT,"
-                + KEY_END_TIME + " TEXT"
+                + KEY_END_TIME + " TEXT,"
                 + KEY_USER_ID + " INTEGER PRIMARY KEY,"
                 + KEY_VEHICLE_ID + " INTEGER,"
                 + KEY_STATUS + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
+    // Upgrading database
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRACKING_DATA);
 
@@ -89,8 +91,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     TrackingTrx getTracking(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_TRACKING_DATA, new String[]{ KEY_LATITUDE,
-                        KEY_LONGTITUDE, KEY_END_TIME, KEY_USER_ID, KEY_VEHICLE_ID, KEY_STATUS},"",
+        Cursor cursor = db.query(TABLE_TRACKING_DATA, new String[]{
+                        KEY_LATITUDE,
+                        KEY_LONGTITUDE,
+                        KEY_END_TIME,
+                        KEY_USER_ID, KEY_VEHICLE_ID, KEY_STATUS}, KEY_USER_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -102,14 +107,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Integer.parseInt(cursor.getString(3)),
                 Integer.parseInt(cursor.getString(4)),
                 Integer.parseInt(cursor.getString(5)));
-
-        // return tracking
+        // return contact
         return trackingTrx;
     }
 
-    // Getting All trackings
-    public List<TrackingTrx> getAllTracking() {
-        List<TrackingTrx> trackingList = new ArrayList<TrackingTrx>();
+    // Getting All Contacts
+    public List<TrackingTrx> getAllContacts() {
+        List<TrackingTrx> trackingTrxes = new ArrayList<TrackingTrx>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_TRACKING_DATA;
 
@@ -123,17 +127,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 trackingTrx.setLatitude(cursor.getString(0));
                 trackingTrx.setLongitude(cursor.getString(1));
                 trackingTrx.setEndDate(cursor.getString(2));
-                trackingTrx.setUserID(Integer.parseInt(cursor.getString(3)));
-                trackingTrx.setVehicleID(Integer.parseInt(cursor.getString(4)));
-                trackingTrx.setStatus(Integer.parseInt(cursor.getString(5)));
-                // Adding tracking to list
-                trackingList.add(trackingTrx);
+                trackingTrx.setLatitude(cursor.getString(3));
+                trackingTrx.setLatitude(cursor.getString(4));
+                trackingTrx.setLatitude(cursor.getString(5));
+
+                trackingTrxes.add(trackingTrx);
             } while (cursor.moveToNext());
         }
 
-        // return tracking list
-        return trackingList;
+        // return contact list
+        return trackingTrxes;
     }
+
 
     // Updating single tracking
     public int updateTracking(TrackingTrx trackingTrx) {
@@ -148,7 +153,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_STATUS, trackingTrx.getStatus());
 
         // updating row
-        return db.update(TABLE_TRACKING_DATA, values, "'",
+        return db.update(TABLE_TRACKING_DATA, values, KEY_USER_ID + "=?",
                 new String[]{String.valueOf(trackingTrx.getUserID())});
     }
 
@@ -161,7 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Getting contacts Count
-    public int getContactsCount() {
+    public int getTrackingAccount() {
         String countQuery = "SELECT  * FROM " + TABLE_TRACKING_DATA;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);

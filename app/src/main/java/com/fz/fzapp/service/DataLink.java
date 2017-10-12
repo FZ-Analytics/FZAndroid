@@ -53,7 +53,7 @@ public interface DataLink
   @POST(FixValue.RestfulReasonlist)
   Call<ReasonPojo> ReasonListService(@Body ReasonHolder reasonHolder);
 
-  @POST(FixValue.RestfulTasklistTrx)
+  @POST(FixValue.RestfTrackUpload)
   Call<LoginPojo> SyncTrxService(@Body SyncTrxHolder syncTrxHolder);
 
   @POST(FixValue.RestfulUpload)

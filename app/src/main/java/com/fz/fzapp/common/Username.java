@@ -38,21 +38,8 @@ public class Username extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.username_lay);
     ButterKnife.bind(this);
-
-    if(AllFunction.CheckPermission(Username.this, this))
-    {
-      File file = getApplicationContext().getDatabasePath(Database_adapter.databasename);
-
-      if(!file.exists())
-      {
-        Database_adapter DataBaseTasklist = new Database_adapter(this);
-        DataBaseTasklist.getReadableDatabase();
-
-//        if(!copyDatabase(this)) return;
-      }
-    }
-
     etUsernameLogin.setText(User.getInstance().getUsername());
+    AllFunction.CheckPermission(Username.this, this);
   }
 
   @OnClick({R.id.rlUsername, R.id.btnUsernameLogin})
@@ -71,37 +58,12 @@ public class Username extends AppCompatActivity
         {
           User.getInstance().setUsername(etUsernameLogin.getText().toString().trim());
           Intent NamaUserIntent = new Intent(Username.this, Password.class);
+          etUsernameLogin.setText("");
           startActivity(NamaUserIntent);
-          finish();
+          this.finish();
         }
       break;
     }
   }
 
-  private boolean copyDatabase(Context context)
-  {
-    try
-    {
-      InputStream inputStream = context.getAssets().open(Database_adapter.databasename);
-      String strFile = Database_adapter.databaselocation + Database_adapter.databasename;
-      OutputStream outputStream = new FileOutputStream(strFile);
-      byte[] buff = new byte[1024];
-      int length = 0;
-
-      while((length = inputStream.read(buff)) > 0)
-      {
-        outputStream.write(buff, 0, length);
-      }
-
-      outputStream.flush();
-      outputStream.close();
-      return true;
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-      Toast.makeText(context, getResources().getString(R.string.strDatabaseFailed), Toast.LENGTH_SHORT).show();
-      return false;
-    }
-  }
 }

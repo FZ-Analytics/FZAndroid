@@ -108,8 +108,11 @@
     <string name="titleKe">Ke</string>
 
     <string name="detailPlanningDate">Tanggal</string>
-    <string name="detailPlanningEstimate">Estimasi Waktu</string>
+    <string name="detailPlanningEstimate">Waktu Tempuh</string>
     <string name="detailPlanningTonase">Tonnage</string>
+    <string name="detailPlanningDivisi">Divisi</string>
+    <string name="detailPlanningBlock">Block</string>
+    <string name="detailPlanningKrani">Krani Pemesan</string>
 
 
 </resources>

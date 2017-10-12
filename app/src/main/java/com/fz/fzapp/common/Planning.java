@@ -46,16 +46,21 @@ public class Planning extends AppCompatActivity {
     TextView tvPlanningFrom;
     @BindView(R.id.tvPlanningTo)
     TextView tvPlanningTo;
-    @BindView(R.id.planningDate)
-    TextView tvPlanningDate;
+    @BindView(R.id.planningKraniRequseter)
+    TextView tvplanningKraniRequseter;
     @BindView(R.id.planningEstimate)
     TextView tvPlanningEstimate;
     @BindView(R.id.planningWeight)
     TextView tvPlanningWeight;
-    @BindView(R.id.btnViewDetail)
-    ImageView btnViewDetail;
-    @BindView(R.id.llViewDetails)
-    LinearLayout llViewDetails;
+    @BindView(R.id.planningDivisi)
+    TextView tvplanningDivisi;
+    @BindView(R.id.planningBlocks)
+    TextView tvplanningBlocks;
+
+//    @BindView(R.id.btnViewDetail)
+//    ImageView btnViewDetail;
+//    @BindView(R.id.llViewDetails)
+//    LinearLayout llViewDetails;
 
 
     private Activity activity = this;
@@ -85,7 +90,9 @@ public class Planning extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    @OnClick({R.id.btnCircle, R.id.btnViewDetail})
+    //    @OnClick({R.id.btnCircle, R.id.btnViewDetail})
+    @OnClick({R.id.btnCircle})
+
     public void onViewClicked(View view) {
         switch (view.getId()) {
 //      case R.id.ivOtherMenuPlan:
@@ -97,17 +104,17 @@ public class Planning extends AppCompatActivity {
                 startActivity(DutyIntent);
                 finish();
                 break;
-            case R.id.btnViewDetail:
-                if (countdetails == 0) {
-                    llViewDetails.setVisibility(View.VISIBLE);
-                    countdetails = 1;
-                    btnViewDetail.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-                } else {
-                    llViewDetails.setVisibility(View.GONE);
-                    countdetails = 0;
-                    btnViewDetail.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
-                }
-                break;
+//            case R.id.btnViewDetail:
+//                if (countdetails == 0) {
+//                    llViewDetails.setVisibility(View.VISIBLE);
+//                    countdetails = 1;
+//                    btnViewDetail.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+//                } else {
+//                    llViewDetails.setVisibility(View.GONE);
+//                    countdetails = 0;
+//                    btnViewDetail.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+//                }
+//                break;
 //      case R.id.btnEndTask:
 //        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //        builder
@@ -137,11 +144,12 @@ public class Planning extends AppCompatActivity {
     }
 
     private void RetriveContent() {
+
         startEstimate = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getStart();
         endEstimate = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd();
         AllFunction.storeToSharedPref(context, AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getJobID(), Preference.prefJobID);
         AllFunction.storeToSharedPref(context, AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTaskID(), Preference.prefTaskID);
-        AllFunction.storeToSharedPref(context, "ASGN", Preference.prefDoneStatus);
+        AllFunction.storeToSharedPref(context, "DONE", Preference.prefDoneStatus);
 
         String StartDate = getDate(startEstimate);
         String starTime = AllFunction.getTime(startEstimate);
@@ -149,16 +157,16 @@ public class Planning extends AppCompatActivity {
         String EndTime = AllFunction.getTime(endEstimate);
         int Estimation = AllFunction.reductionDate(startEstimate, endEstimate);
 
-        tvPlanningDate.setText(StartDate);
+        tvplanningKraniRequseter.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getName());
         tvPlanningEstimate.setText(String.valueOf(Estimation) + " menit");
         tvPlanningWeight.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTonnage() + " kg");
+        tvplanningDivisi.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getDivID());
+        tvplanningBlocks.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getBlocks());
         tvPlanningTime.setText(starTime);
         tvPlanningTimeTo.setText(EndTime);
         tvPlanningFrom.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getFrom());
-        tvPlanningTo.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getBlocks());
+        tvPlanningTo.setText(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTo());
     }
-
-
 }
 
 

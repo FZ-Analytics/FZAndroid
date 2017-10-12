@@ -7,7 +7,7 @@ package com.fz.fzapp.utils;
 public class FixValue {
     public static final int SPLASH_DISPLAY_LENGHT = 2500;
     public static final String strPreferenceName = "com.smart_tbk.fz.pref";
-    //    public static final String Hostname = "http://192.168.200.26:8084/fz/api/v1/";
+//    public static final String Hostname = "http://192.168.200.23:8084/fz/api/v1/";
     public static final String Hostname = "http://fiza2.sinarmas-agri.com:8080/FZWeb/api/v1/";
 
     //user

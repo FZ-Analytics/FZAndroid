@@ -13,12 +13,11 @@ public class SyncTrxHolder
 {
   private String TableName;
   private TaskListTrx TaskListTrxData;
-  private TrackingTrx TrackingTrxData;
+  private TrackingTrx TrackingData;
 
-  public SyncTrxHolder(String tableName, TaskListTrx taskListTrxData, TrackingTrx trackingTrxData)
+  public SyncTrxHolder(TrackingTrx trackingTrxData)
   {
-    TableName = tableName;
-    TaskListTrxData = taskListTrxData;
-    TrackingTrxData = trackingTrxData;
+    TrackingData = trackingTrxData;
+
   }
 }

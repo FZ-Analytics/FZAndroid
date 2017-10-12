@@ -1,151 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-   xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-   android:id="@+id/sinkrondata_layout"
-   android:layout_width="match_parent"
-   android:layout_height="match_parent"
-   tools:context="com.fz.fzapp.common.SyncData"
-   android:paddingLeft="@dimen/activity_horizontal_margin"
-   android:paddingRight="@dimen/activity_horizontal_margin"
-   android:paddingTop="@dimen/activity_vertical_margin"
-   android:paddingBottom="@dimen/activity_vertical_margin">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sinkrondata_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.fz.fzapp.common.SyncData">
+
     <RelativeLayout
-       android:id="@+id/header"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="vertical">
-        <TextView
-           style="@style/DefaultUtils3"
-           android:text="@string/titleSyncData1"
-           android:id="@+id/textView"
-           android:layout_alignParentTop="true"
-           android:layout_alignParentLeft="true"
-           android:layout_alignParentStart="true"/>
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <TextView
-           style="@style/DefaultHead1"
-           android:text="@string/titleSyncData2"
-           android:layout_alignParentTop="true"
-           android:layout_toRightOf="@+id/textView"
-           android:layout_toEndOf="@+id/textView"
-           android:id="@+id/textView2"
-           android:layout_marginLeft="5dp"/>
+            android:id="@+id/textView"
+            style="@style/DefaultUtils3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:text="@string/titleSyncData1" />
 
-        <Button
-           style="@style/DefaultSplitter"
-           android:layout_below="@+id/textView"
-           android:id="@+id/splitter"
-           android:layout_marginTop="8dp"
-           android:layout_alignLeft="@+id/textView"
-           android:layout_alignStart="@+id/textView"/>
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/DefaultHead1"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toEndOf="@+id/textView"
+            android:layout_toRightOf="@+id/textView"
+            android:text="@string/titleSyncData2" />
 
-        <!--<ImageView-->
-           <!--android:layout_width="wrap_content"-->
-           <!--android:layout_height="wrap_content"-->
-           <!--android:background="@drawable/ic_other_menu"-->
-           <!--android:layout_alignParentTop="true"-->
-           <!--android:layout_alignRight="@+id/splitter"-->
-           <!--android:layout_alignEnd="@+id/splitter"-->
-           <!--android:id="@+id/ivOtherMenu"/>-->
+        <View
+            android:id="@+id/splitter"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@+id/textView"
+            android:layout_alignStart="@+id/textView"
+            android:layout_below="@+id/textView"
+            android:background="@color/gray"
+            android:layout_marginTop="8dp" />
 
     </RelativeLayout>
+
     <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:layout_below="@+id/header"
-       android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:orientation="vertical">
+
         <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:weightSum="2"
+            android:id="@+id/llprofile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_black"
+            android:orientation="horizontal"
             android:paddingTop="-1dp"
-           android:orientation="horizontal"
-           android:background="@drawable/border_black">
+            android:weightSum="2">
+
             <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="@dimen/padding_20"
-               android:layout_weight="1"
-               android:layout_marginTop="5dp"
-               android:layout_marginBottom="5dp"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_20"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
 
-               android:orientation="horizontal">
+                android:orientation="horizontal">
+
                 <ImageView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   app:srcCompat="@drawable/ic_account"/>
-                <TextView
-                   android:id="@+id/tvUserNameSync"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="@string/titleKe"
-                   android:gravity="center"
-                   android:textSize="@dimen/padding_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="5dp"
+                    app:srcCompat="@drawable/ic_account" />
 
-                />
+                <TextView
+                    android:id="@+id/tvUserNameSync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/titleKe"
+                    android:textSize="@dimen/padding_14"
+
+                    />
             </LinearLayout>
+
             <View
-               android:layout_width="0.5dp"
-               android:layout_height="match_parent"></View>
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"></View>
+
             <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="@dimen/padding_20"
-               android:layout_weight="1"
-               android:layout_marginTop="5dp"
-               android:layout_marginBottom="5dp">
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_20"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/darkGrey">
+
+                </LinearLayout>
+
                 <ImageView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@drawable/truck_24"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/truck_24" />
+
                 <TextView
-                   android:id="@+id/tvTruckSync"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="@string/titleKe"
-                   android:gravity="center"
-                   android:textSize="@dimen/padding_14"
-                />
+                    android:id="@+id/tvTruckSync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/titleKe"
+                    android:textSize="@dimen/padding_14" />
             </LinearLayout>
         </LinearLayout>
-        <TextView
-           style="@style/DefaultHead1"
-           android:text="@string/titleKlik"
-           android:layout_marginTop="@dimen/padding_60"
-           android:id="@+id/tvMsg"
-           android:layout_gravity="center"
-           android:layout_centerHorizontal="true"/>
 
-        <ImageView
-           android:layout_width="@dimen/diameter_circle"
-           android:layout_height="@dimen/diameter_circle"
-           app:srcCompat="@drawable/buttonthick"
-           android:id="@+id/ivGo"
-           android:layout_centerHorizontal="true"
-           android:layout_gravity="center"
-           android:scaleType="fitXY"
-           android:layout_below="@+id/splitter"
-           android:layout_margin="@dimen/padding_20"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-           android:paddingTop="@dimen/padding_14"
-           style="@style/DefaultHead1"
-           android:text="@string/notifikasiText"
-           android:id="@+id/tvNotifeSync"
-           android:layout_gravity="center"
-           android:layout_centerHorizontal="true"
-           android:visibility="invisible"/>
+        </RelativeLayout>
 
-        <Button
-           style="@style/DefaultGrayButton"
-           android:text="@string/strBtnCancel"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_alignParentBottom="true"
-           android:layout_centerHorizontal="true"
-           android:layout_marginTop="@dimen/padding_60"
-           android:layout_gravity="center"
-           android:id="@+id/btnCancelGo"
-           android:visibility="visible"/>
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvMsg"
+                style="@style/DefaultHead1"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/padding_70"
+                android:text="@string/titleKlik" />
+
+            <ImageView
+                android:id="@+id/ivGo"
+                android:layout_width="@dimen/diameter_circle"
+                android:layout_height="@dimen/diameter_circle"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/padding_20"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/buttonthick" />
+
+
+
+            <Button
+                android:id="@+id/btnCancelGo"
+                style="@style/DefaultGrayButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="50dp"
+                android:text="@string/strBtnCancel"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvNotifeSync"
+                style="@style/DefaultHead1"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_above="@id/btnCancelGo"
+                android:text="@string/notifikasiText"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+
     </LinearLayout>
 
 </RelativeLayout>

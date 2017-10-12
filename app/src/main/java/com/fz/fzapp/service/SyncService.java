@@ -65,7 +65,7 @@ public class SyncService {
             @Override
             public void onResponse(Call<TaskListPojo> call, Response<TaskListPojo> response) {
                 if (response.isSuccessful()) {
-
+                    Log.d("TaskList", response.body().getCoreResponse().getMsg()+response.body().getCoreResponse().getCode());
                     if (response.body().getCoreResponse().getCode() != FixValue.intSuccess)
 //						setAllOff(response.body().getCoreResponse().getMsg());
                         ProccessWait(response.body().getCoreResponse().getMsg());

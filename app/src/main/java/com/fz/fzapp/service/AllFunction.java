@@ -5,6 +5,7 @@ package com.fz.fzapp.service;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.*;
@@ -28,16 +29,23 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.fz.fzapp.R;
+import com.fz.fzapp.common.SyncData;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.UploadPlanData;
 import com.fz.fzapp.pojo.UploadPojo;
+import com.fz.fzapp.sending.UploadHolder;
 import com.fz.fzapp.utils.FixValue;
 import com.fz.fzapp.utils.PopupMessege;
 import com.fz.fzapp.utils.Preference;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -568,9 +576,9 @@ public class AllFunction extends AppCompatActivity {
     public static String getDate(String Date) {
         Date tanggal = null;
         String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.UK);
         try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.UK);
             tanggal = form.parse(Date);
             dateConvert = df.format(tanggal);
 
@@ -584,11 +592,11 @@ public class AllFunction extends AppCompatActivity {
     public static String getTime(String time) {
         Date tanggal = null;
         String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.UK);
 
         try {
             tanggal = form.parse(time);
-            DateFormat tf = new SimpleDateFormat("hh:mm:ss");
+            DateFormat tf = new SimpleDateFormat("k:mm:ss ",Locale.UK);
             dateConvert = tf.format(tanggal);
 
         } catch (ParseException e) {
@@ -636,6 +644,7 @@ public class AllFunction extends AppCompatActivity {
         uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
         uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
         uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
+        uploadPlanData.setVehicleID(AllFunction.getIntFromSharedPref(mContext, Preference.prefVehicleID));
         uploadPlanData.setReasonState(AllFunction.getIntFromSharedPref(mContext, "getReasonId"));
         uploadPlanData.setReasonID(rsnID);
         uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
@@ -646,5 +655,4 @@ public class AllFunction extends AppCompatActivity {
 
 
     }
-
 }

@@ -8,116 +8,140 @@ import com.google.gson.annotations.SerializedName;
  * Tanggal : 25-Jul-17
  * HP/WA : 0857 7070 6 777
  */
-public class TaskListResponse
-{
-  @SerializedName("divID")
-  @Expose
-  private String divID;
-  @SerializedName("JobID")
-  @Expose
-  private Integer jobID;
-  @SerializedName("TaskID")
-  @Expose
-  private Integer taskID;
-  @SerializedName("From")
-  @Expose
-  private String from;
-  @SerializedName("To")
-  @Expose
-  private String to;
-  @SerializedName("Start")
-  @Expose
-  private String start;
-  @SerializedName("End")
-  @Expose
-  private String end;
-  @SerializedName("Tonnage")
-  @Expose
-  private Integer tonnage;
-  @SerializedName("Blocks")
-  @Expose
-  private String blocks;
-  @SerializedName("TaskSeq")
-  @Expose
-  private Integer taskSeq;
+public class TaskListResponse {
+    @SerializedName("divID")
+    @Expose
+    private String divID;
+    @SerializedName("JobID")
+    @Expose
+    private Integer jobID;
+    @SerializedName("TaskID")
+    @Expose
+    private Integer taskID;
+    @SerializedName("From")
+    @Expose
+    private String from;
+    @SerializedName("To")
+    @Expose
+    private String to;
+    @SerializedName("Start")
+    @Expose
+    private String start;
+    @SerializedName("End")
+    @Expose
+    private String end;
+    @SerializedName("Tonnage")
+    @Expose
+    private Integer tonnage;
+    @SerializedName("Blocks")
+    @Expose
+    private String blocks;
+    @SerializedName("TaskSeq")
+    @Expose
+    private Integer taskSeq;
 
-  public String getDivID() {
-    return divID;
-  }
+    @SerializedName("RequesterID")
+    @Expose
+    private Integer requesterID;
 
-  public void setDivID(String divID) {
-    this.divID = divID;
-  }
+    @SerializedName("Name")
+    @Expose
+    private String name;
 
-  public Integer getJobID() {
-    return jobID;
-  }
 
-  public void setJobID(Integer jobID) {
-    this.jobID = jobID;
-  }
+    public Integer getRequesterID() {
+        return requesterID;
+    }
 
-  public Integer getTaskID() {
-    return taskID;
-  }
+    public void setRequesterID(Integer requesterID) {
+        this.requesterID = requesterID;
+    }
 
-  public void setTaskID(Integer taskID) {
-    this.taskID = taskID;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getFrom() {
-    return from;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setFrom(String from) {
-    this.from = from;
-  }
+    public String getDivID() {
+        return divID;
+    }
 
-  public String getTo() {
-    return to;
-  }
+    public void setDivID(String divID) {
+        this.divID = divID;
+    }
 
-  public void setTo(String to) {
-    this.to = to;
-  }
+    public Integer getJobID() {
+        return jobID;
+    }
 
-  public String getStart() {
-    return start;
-  }
+    public void setJobID(Integer jobID) {
+        this.jobID = jobID;
+    }
 
-  public void setStart(String start) {
-    this.start = start;
-  }
+    public Integer getTaskID() {
+        return taskID;
+    }
 
-  public String getEnd() {
-    return end;
-  }
+    public void setTaskID(Integer taskID) {
+        this.taskID = taskID;
+    }
 
-  public void setEnd(String end) {
-    this.end = end;
-  }
+    public String getFrom() {
+        return from;
+    }
 
-  public Integer getTonnage() {
-    return tonnage;
-  }
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
-  public void setTonnage(Integer tonnage) {
-    this.tonnage = tonnage;
-  }
+    public String getTo() {
+        return to;
+    }
 
-  public String getBlocks() {
-    return blocks;
-  }
+    public void setTo(String to) {
+        this.to = to;
+    }
 
-  public void setBlocks(String blocks) {
-    this.blocks = blocks;
-  }
+    public String getStart() {
+        return start;
+    }
 
-  public Integer getTaskSeq() {
-    return taskSeq;
-  }
+    public void setStart(String start) {
+        this.start = start;
+    }
 
-  public void setTaskSeq(Integer taskSeq) {
-    this.taskSeq = taskSeq;
-  }
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    public Integer getTonnage() {
+        return tonnage;
+    }
+
+    public void setTonnage(Integer tonnage) {
+        this.tonnage = tonnage;
+    }
+
+    public String getBlocks() {
+        return blocks;
+    }
+
+    public void setBlocks(String blocks) {
+        this.blocks = blocks;
+    }
+
+    public Integer getTaskSeq() {
+        return taskSeq;
+    }
+
+    public void setTaskSeq(Integer taskSeq) {
+        this.taskSeq = taskSeq;
+    }
 }

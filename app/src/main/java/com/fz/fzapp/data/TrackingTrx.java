@@ -8,26 +8,32 @@ public class TrackingTrx {
     private int UserID;
     private int VehicleID;
     private int Status;
-
-    public TrackingTrx( String Latitude, String Longitude, String EndDate, int UserID, int VehicleID, int Status) {
-
-        this.Latitude = Latitude;
-        this.Longitude = Longitude;
-        this.EndDate = EndDate;
-        this.UserID = UserID;
-        this.VehicleID = VehicleID;
-        this.Status = Status;
-
-    }
+    private int LocationID;
 
     public TrackingTrx() {
     }
 
+    public TrackingTrx(String latitude, String longitude, String strEndTime, int userId, int vehicleId, int statTracking) {
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.EndDate = strEndTime;
+        this.VehicleID = vehicleId;
+        this.UserID = userId;
+        this.Status = statTracking;
+
+    }
+
+    public int getLocationID() {
+        return LocationID;
+    }
+
+    public void setLocationID(int locationID) {
+        LocationID = locationID;
+    }
 
     public String getLatitude() {
         return Latitude;
     }
-
 
     public void setLatitude(String latitude) {
         Latitude = latitude;
