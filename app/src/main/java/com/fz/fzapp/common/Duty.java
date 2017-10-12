@@ -201,13 +201,14 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             }
 
             public void onFinish() {
-                countingUpTimer(finalDiff);
+                countingUpTimer(0);
             }
         }.start();
     }
 
     private void countingUpTimer(long absDif) {
         onDuty = 2;
+        diff = absDif;
         ivGo.setImageResource(R.drawable.circle_red);
 //        frontDutty.setBackgroundResource(R.color.red);
         borderLayout1.setBackgroundResource(R.drawable.border_red);
