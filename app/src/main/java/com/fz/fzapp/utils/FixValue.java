@@ -4,6 +4,7 @@ package com.fz.fzapp.utils;
  * Created by ignat on 16-Jun-16.
  */
 
+
 public class FixValue {
     public static final int SPLASH_DISPLAY_LENGHT = 2500;
     public static final String strPreferenceName = "com.smart_tbk.fz.pref";
