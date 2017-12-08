@@ -22,7 +22,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:text="@string/titlePlan1" />
+            android:text="@string/titlePlan1"
+            android:textSize="@dimen/padding_16"/>
 
         <TextView
             android:id="@+id/tvPlanning2"
@@ -31,7 +32,17 @@
             android:layout_marginLeft="5dp"
             android:layout_toEndOf="@+id/tvPlanning1"
             android:layout_toRightOf="@+id/tvPlanning1"
-            android:text="@string/titlePlan2" />
+            android:text="@string/titlePlan2"
+            android:textSize="@dimen/padding_16"/>
+
+        <TextView
+            android:id="@+id/tvDivision"
+            style="@style/DefaultHead1"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:text="BS"
+            android:textSize="@dimen/padding_16"/>
 
         <View
             android:id="@+id/splitter"
@@ -56,18 +67,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="@dimen/padding_20"
-            android:layout_marginTop="@dimen/padding_30">
+            android:layout_marginBottom="@dimen/padding_16"
+            android:layout_marginTop="@dimen/padding_12">
 
             <ImageView
-                android:layout_width="@dimen/padding_200"
-                android:layout_height="@dimen/padding_200"
-                android:layout_centerInParent="true"
+                android:layout_width="@dimen/padding_180"
+                android:layout_height="@dimen/padding_180"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/circle" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"
                 android:text="@string/titleDutyStart"
                 android:textSize="30sp" />
@@ -185,7 +198,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnCircle"
-            android:layout_marginTop="@dimen/padding_16"
             android:paddingLeft="@dimen/activity_horizontal_margin"
 
             android:paddingRight="@dimen/activity_horizontal_margin">
@@ -194,7 +206,7 @@
                 android:id="@+id/track"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/orange"
+                android:background="@color/soft_orange"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -217,9 +229,9 @@
                             android:id="@+id/tvPlanningFrom"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginBottom="5dp"
+                            android:paddingBottom="3dp"
                             android:text="@string/titleDari"
                             android:textColor="@color/white"
                             android:textSize="25sp" />
@@ -228,10 +240,10 @@
                             android:id="@+id/tvPlanningTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
                             android:layout_below="@+id/tvPlanningFrom"
-                            android:layout_gravity="center"
-                            android:layout_margin="5dp"
+                            android:layout_centerHorizontal="true"
+                            android:paddingBottom="3dp"
+
                             android:text="@string/titleJam"
                             android:textColor="@color/white"
                             android:textSize="@dimen/padding_12" />
@@ -273,10 +285,11 @@
                             android:id="@+id/tvPlanningTo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginBottom="5dp"
+                            android:paddingBottom="3dp"
                             android:text="@string/titleKe"
+
                             android:textColor="@color/white"
                             android:textSize="25sp" />
 
@@ -285,12 +298,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tvPlanningTo"
-
-
+                            android:layout_centerHorizontal="true"
                             android:layout_gravity="center"
-                            android:layout_margin="5dp"
+                            android:paddingBottom="3dp"
                             android:text="@string/titleJam"
-
                             android:textColor="@color/white"
                             android:textSize="@dimen/padding_12" />
                     </RelativeLayout>
@@ -308,34 +319,23 @@
                 android:layout_marginRight="8dp"
                 android:background="@color/white" />
 
-            <!--<RelativeLayout-->
-            <!--android:id="@+id/rlViewDetails"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/viewDetailWidget"-->
-            <!--android:background="@color/orange">-->
-
-            <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/btnViewDetail"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />&ndash;&gt;-->
-            <!--</RelativeLayout>-->
-
             <LinearLayout
                 android:id="@+id/llViewDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/viewDetailWidget"
                 android:background="@drawable/border_orange"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_below="@+id/track"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -372,6 +372,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -409,6 +411,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -445,6 +449,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -481,6 +487,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
                     android:weightSum="2">
 
                     <LinearLayout
@@ -503,6 +511,82 @@
 
                         <TextView
                             android:id="@+id/planningBlocks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/titleTanggal"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/detailPlanningBinLocation"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/planningBin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/titleTanggal"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/marginPlanning"
+                    android:paddingLeft="@dimen/paddingPlanningDetail"
+                    android:paddingRight="@dimen/paddingPlanningDetail"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/detailPlanningLocationEmptyBin"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/planningEmptyBin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/titleTanggal"

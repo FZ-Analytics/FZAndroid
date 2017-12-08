@@ -10,9 +10,10 @@ import java.util.List;
  */
 
 public class UploadHolder {
+    private int ActualKg;
     private List<UploadPlanData> UploadData;
-
-    public UploadHolder(List<UploadPlanData> uploadData) {
+    public UploadHolder(List<UploadPlanData> uploadData, int timbanganActual) {
+        ActualKg = timbanganActual;
         UploadData = uploadData;
     }
 }

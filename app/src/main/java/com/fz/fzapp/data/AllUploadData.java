@@ -27,8 +27,8 @@ public class AllUploadData {
     }
 
     public void setDatanya(UploadPlanData datanya) {
-        Datanya = datanya;
-        UploadData.add(Datanya);
+        this.Datanya = datanya;
+        this.UploadData.add(datanya);
     }
 
     private static AllUploadData UserInstance = new AllUploadData();

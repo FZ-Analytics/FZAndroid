@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -46,7 +47,6 @@ public class Database_adapter extends SQLiteOpenHelper {
         if (OpenDatabase()) {
             ContentValues values = new ContentValues();
             sqlDatabase.beginTransaction();
-
             values.put("Latitude", TrackingData.get("Latitude"));
             values.put("Longitude", TrackingData.get("Longitude"));
             values.put("EndDate", TrackingData.get("EndDate"));

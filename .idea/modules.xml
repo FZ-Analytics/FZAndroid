@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FZAndroid.iml" filepath="$PROJECT_DIR$/FZAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FZApp.iml" filepath="$PROJECT_DIR$/FZApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

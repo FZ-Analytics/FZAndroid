@@ -58,7 +58,6 @@ public class Username extends AppCompatActivity
         {
           User.getInstance().setUsername(etUsernameLogin.getText().toString().trim());
           Intent NamaUserIntent = new Intent(Username.this, Password.class);
-          etUsernameLogin.setText("");
           startActivity(NamaUserIntent);
           this.finish();
         }

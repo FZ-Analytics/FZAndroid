@@ -11,11 +11,12 @@
     <TextView
         android:id="@+id/textView"
         style="@style/DefaultUtils3"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="@string/titleDuty1" />
+        android:paddingLeft="@dimen/padding_12"
+        android:text="@string/titleDuty1"
+        android:textSize="@dimen/padding_16" />
 
     <TextView
         android:id="@+id/textView2"
@@ -24,7 +25,17 @@
         android:layout_marginLeft="5dp"
         android:layout_toEndOf="@+id/textView"
         android:layout_toRightOf="@+id/textView"
-        android:text="@string/titleDuty2" />
+        android:text="@string/titleDuty2"
+        android:textSize="@dimen/padding_16" />
+
+    <TextView
+        android:id="@+id/tvDivision"
+        style="@style/DefaultHead1"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingRight="@dimen/padding_12"
+        android:text="@string/titleDuty2"
+        android:textSize="@dimen/padding_16" />
 
     <View
         android:id="@+id/splitter"
@@ -34,8 +45,8 @@
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
         android:layout_below="@+id/textView"
-        android:background="@color/green_light"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:background="@color/green_light" />
 
     <RelativeLayout
         android:id="@+id/llMaps"
@@ -53,10 +64,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             android:weightSum="8">
 
             <Button
@@ -86,14 +97,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/splitter"
-        android:layout_marginTop="11dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/llTimer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_30"
+            android:layout_marginBottom="@dimen/padding_16"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
@@ -142,46 +152,7 @@
                             android:gravity="center"
                             android:text="00:00:00"
                             android:textSize="@dimen/padding_26" />
-                        <!--<TextView-->
-                        <!--style="@style/DefaultHead1"-->
-                        <!--android:text=":"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:textSize="@dimen/padding_32"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:gravity="center"-->
-                        <!--android:layout_marginBottom="10dp"/>-->
-                        <!--<TextView-->
-                        <!--style="@style/DefaultHead1"-->
-                        <!--android:text="00"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:textSize="@dimen/padding_32"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:id="@+id/tvMinutes"-->
-                        <!--android:gravity="center"-->
-                        <!--android:layout_marginBottom="10dp"/>-->
-                        <!--<TextView-->
-                        <!--style="@style/DefaultHead1"-->
-                        <!--android:text=":"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:textSize="@dimen/padding_32"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:gravity="center"-->
-                        <!--android:layout_marginBottom="10dp"/>-->
-                        <!--<TextView-->
-                        <!--style="@style/DefaultHead1"-->
-                        <!--android:text="00"-->
-                        <!--android:layout_centerInParent="true"-->
-                        <!--android:textSize="@dimen/padding_32"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:gravity="center"-->
-                        <!--android:id="@+id/tvSecond"-->
-                        <!--android:layout_marginBottom="10dp"/>-->
                     </LinearLayout>
-
 
                 </RelativeLayout>
 
@@ -205,8 +176,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llDestination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/llTimer"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -227,9 +201,9 @@
                 style="@style/DefaultUtils3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:ems="10"
-                android:text="@string/titleDari" />
+                android:text="@string/titleDari"
+                android:textSize="@dimen/padding_14" />
 
             <LinearLayout
                 android:id="@+id/borderLayout1"
@@ -244,7 +218,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Start" />
+                    android:text="Start"
+                    android:textSize="@dimen/padding_18" />
 
                 <TextView
                     android:id="@+id/tvTimeActualDutty"
@@ -252,7 +227,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Time"
-                    android:textSize="@dimen/padding_12" />
+                    android:textSize="@dimen/padding_14" />
                 />
             </LinearLayout>
 
@@ -267,12 +242,13 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textView4"
                 style="@style/DefaultUtils3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:ems="10"
-                android:text="@string/titleKe" />
+                android:text="@string/titleKe"
+                android:textSize="@dimen/padding_14" />
 
             <LinearLayout
                 android:id="@+id/borderLayout2"
@@ -288,7 +264,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Destination" />
+                    android:text="Destination"
+                    android:textSize="@dimen/padding_18" />
 
                 <TextView
                     android:id="@+id/tvtimeEstimateDutty"
@@ -296,16 +273,171 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Time"
-                    android:textSize="@dimen/padding_12" />
+                    android:textSize="@dimen/padding_14" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvTrackTest2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                />
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llViewDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDestination"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/border"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/marginPlanning"
+            android:paddingLeft="@dimen/paddingPlanningDetail"
+            android:paddingRight="@dimen/paddingPlanningDetail"
+            android:paddingTop="@dimen/paddingDuty"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detailPlanningDivisi"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/dutyDivisi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleTanggal"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/marginPlanning"
+            android:paddingLeft="@dimen/paddingPlanningDetail"
+            android:paddingRight="@dimen/paddingPlanningDetail"
+            android:paddingTop="@dimen/paddingDuty"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detailPlanningBlock"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/dutyBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleTanggal"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/marginPlanning"
+            android:paddingLeft="@dimen/paddingPlanningDetail"
+            android:paddingRight="@dimen/paddingPlanningDetail"
+            android:paddingTop="@dimen/paddingDuty"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detailPlanningBinLocation"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/DutyLokasi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleTanggal"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/marginPlanning"
+            android:paddingBottom="@dimen/paddingDuty"
+            android:paddingLeft="@dimen/paddingPlanningDetail"
+            android:paddingRight="@dimen/paddingPlanningDetail"
+            android:paddingTop="@dimen/paddingDuty"
+
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detailPlanningLocationEmptyBin"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/dutyEmptyBinLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titleTanggal"
+                    android:textColor="@color/gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

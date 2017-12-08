@@ -48,6 +48,14 @@ public class TaskListResponse {
     @Expose
     private String name;
 
+    @SerializedName("BinLocation")
+    @Expose
+    private String binLocation;
+
+    @SerializedName("BinEmpty")
+    @Expose
+    private String binEmpty;
+
 
     public Integer getRequesterID() {
         return requesterID;
@@ -143,5 +151,21 @@ public class TaskListResponse {
 
     public void setTaskSeq(Integer taskSeq) {
         this.taskSeq = taskSeq;
+    }
+
+    public String getBinLocation() {
+        return binLocation;
+    }
+
+    public void setBinLocation(String binLocation) {
+        this.binLocation = binLocation;
+    }
+
+    public String getBinEmpty() {
+        return binEmpty;
+    }
+
+    public void setBinEmpty(String binEmpty) {
+        this.binEmpty = binEmpty;
     }
 }

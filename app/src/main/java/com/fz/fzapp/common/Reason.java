@@ -3,6 +3,7 @@ package com.fz.fzapp.common;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,9 +15,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import com.fz.fzapp.R;
+import com.fz.fzapp.adapter.AllReason_adapter;
 import com.fz.fzapp.adapter.AllTaskList_adapter;
 import com.fz.fzapp.adapter.ReasonList_adapter;
+import com.fz.fzapp.model.ReasonResponse;
 import com.fz.fzapp.utils.PopupMessege;
+import com.fz.fzapp.utils.Preference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
+import static junit.runner.BaseTestRunner.getPreference;
 
 public class Reason extends AppCompatActivity {
     @BindView(R.id.lvReasonList)
@@ -59,20 +69,33 @@ public class Reason extends AppCompatActivity {
     private void onProcessDuty() {
         lvReasonList.invalidateViews();
         ReasonList_adapter taskList_adapter = null;
-
-        if (onDuty == 1)
-            taskList_adapter = new ReasonList_adapter(activity, context, AllTaskList_adapter.getInstance().getAllresponsefail(), onDuty);
-        else if (onDuty == 2)
-            taskList_adapter = new ReasonList_adapter(activity, context, AllTaskList_adapter.getInstance().getAllresponselate(), onDuty);
+        List<ReasonResponse> ReasonList = null;
+        if (onDuty == 1) {
+            ReasonList = getPreferenceReason(Preference.prefFail, onDuty);
+            taskList_adapter = new ReasonList_adapter(activity, context, ReasonList, onDuty);
+        } else if (onDuty == 2) {
+            ReasonList = getPreferenceReason(Preference.prefLate,onDuty);
+            taskList_adapter = new ReasonList_adapter(activity, context, ReasonList, onDuty);
+        }
         lvReasonList.setAdapter(taskList_adapter);
     }
 
-    @OnClick(R.id.ivRefreshReason)
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.ivRefreshReason:
-                onProcessDuty();
-                break;
-        }
+    private List<ReasonResponse> getPreferenceReason(String key, int mode) {
+        SharedPreferences prefs = getSharedPreferences(key, mode);
+        String httpParamJSONList = prefs.getString(key, "");
+        List<ReasonResponse> httpParamList = new Gson().fromJson(httpParamJSONList, new TypeToken<List<ReasonResponse>>() {
+        }.getType());
+        return httpParamList;
     }
+
 }
+
+//    @OnClick(R.id.ivRefreshReason)
+//    public void onViewClicked(View view) {
+//        switch (view.getId()) {
+//            case R.id.ivRefreshReason:
+//                onProcessDuty();
+//                break;
+//        }
+//    }
+

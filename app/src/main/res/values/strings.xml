@@ -35,7 +35,9 @@
     <string name="strCreateAkun">Don\'t have an account ?<u>Create Account</u></string>
     <string name="strSubmitLogin">Submit</string>
     <string name="strAccountData">Account Data</string>
+    <string name="PopupMessage">Anda yakin ?</string>
     <string name="strBtnOK">OK</string>
+    <string name="strBtnCancel2">Tidak</string>
     <string name="strBtnCancel">Akhiri Hari</string>
     <string name="strWait">Harap tunggu</string>
     <string name="strLoginProcess">Processing login</string>
@@ -87,6 +89,8 @@
     <string name="msgInputUserID">Masukan nama user</string>
     <string name="msgInputPassword">Masukan password</string>
     <string name="msgServerResponse">Server tidak merespon</string>
+    <string name="msgCheckConnection">Cek Koneksi Data Anda</string>
+
     <string name="msgServerFailure">Server tidak dikenali</string>
     <string name="msgServerData">Respon dari server tidak dikenali</string>
     <string name="msgContinueSync">Upload data ke server ?</string>
@@ -112,7 +116,24 @@
     <string name="detailPlanningTonase">Tonnage</string>
     <string name="detailPlanningDivisi">Divisi</string>
     <string name="detailPlanningBlock">Block</string>
+    <string name="detailPlanningBinLocation">Lokasi Bin</string>
+    <string name="detailPlanningLocationEmptyBin">Lokasi Bin Kosong</string>
+
     <string name="detailPlanningKrani">Krani Pemesan</string>
+
+//Order
+    <string name="orderTittel">Please input your order Job</string>
+    <string name="Estate">Estate + Division</string>
+    <string name="orderBetween">Between Block</string>
+    <string name="andBlock">And Block</string>
+    <string name="directionLocation">Direction Location</string>
+    <string name="binReady">Bin Ready Estimate</string>
+    <string name="estimateTon">Estimate KG</string>
+    <string name="remark">Bin Posotion/Remark</string>
+    <string name="last2order">Last 2 Order</string>
+    <string name="input_tonase">Masukan berat buah yang anda angkut:</string>
+
+
 
 
 </resources>

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#303F9F</color>
+    <color name="colorPrimaryDark">#bfffffff</color>
     <color name="Blue_70">#ff3367d6</color>
+    <color name="btnorange">#e77116</color>
 
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#f5693d</color>
     <color name="gray">#848484</color>
     <color name="graylow">#9d9d9d</color>
     <color name="orange">#f5693d</color>
     <color name="soft_orange">#f27a55</color>
+    <color name="whiteThree">#d8d8d8</color>
 
     <color name="WhiteTrans">#bfffffff</color>
     <color name="white">#FFFFFF</color>

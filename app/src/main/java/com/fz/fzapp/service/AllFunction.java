@@ -19,6 +19,7 @@ import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,6 +36,8 @@ import com.fz.fzapp.R;
 import com.fz.fzapp.common.SyncData;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.UploadPlanData;
+import com.fz.fzapp.model.ReasonResponse;
+import com.fz.fzapp.model.TaskListResponse;
 import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.sending.UploadHolder;
 import com.fz.fzapp.utils.FixValue;
@@ -151,6 +154,11 @@ public class AllFunction extends AppCompatActivity {
         editor.putString(key, value).commit();
     }
 
+    public static void storeToSharedPrefTime(final Context context, Date value, String key) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(FixValue.strPreferenceName, Context.MODE_PRIVATE).edit();
+        editor.putString(key, String.valueOf(value)).commit();
+    }
+
     public static void storeToSharedPref(final Context context, long value, String key) {
         SharedPreferences.Editor editor = context.getSharedPreferences(FixValue.strPreferenceName, Context.MODE_PRIVATE).edit();
         editor.putLong(key, value).commit();
@@ -166,6 +174,27 @@ public class AllFunction extends AppCompatActivity {
         editor.putInt(key, value).commit();
     }
 
+    public static void storeObjectToSharedPrefObj(final Context context, Object object, String key)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(FixValue.strPreferenceName, 0);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        final Gson gson = new Gson();
+        String serializedObject = gson.toJson(object);
+        sharedPreferencesEditor.putString(key, serializedObject);
+        sharedPreferencesEditor.apply();
+    }
+
+    public static <GenericClass> GenericClass getObjectFromSharedPrefObj(Context context, Class<GenericClass> classType, String key)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(FixValue.strPreferenceName, 0);
+        if (sharedPreferences.contains(key))
+        {
+            final Gson gson = new Gson();
+            return gson.fromJson(sharedPreferences.getString(key, ""), classType);
+        }
+
+        return null;
+    }
 
     public static String getStringFromSharedPref(final Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences(FixValue.strPreferenceName, Context.MODE_PRIVATE);
@@ -187,16 +216,6 @@ public class AllFunction extends AppCompatActivity {
         return prefs.getInt(key, 0);
     }
 
-    public static <GenericClass> GenericClass getObjectFromSharedPref(final Context context, String key, Class<GenericClass> classType) {
-        SharedPreferences prefs = context.getSharedPreferences(FixValue.strPreferenceName, Context.MODE_PRIVATE);
-
-        if (prefs.contains(key)) {
-            final Gson gson = new Gson();
-            return gson.fromJson(prefs.getString(key, ""), classType);
-        }
-
-        return null;
-    }
 
     public static String getDateFromSharedPref(final Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences(FixValue.strPreferenceName, Context.MODE_PRIVATE);
@@ -576,9 +595,9 @@ public class AllFunction extends AppCompatActivity {
     public static String getDate(String Date) {
         Date tanggal = null;
         String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.UK);
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
         try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd",Locale.UK);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             tanggal = form.parse(Date);
             dateConvert = df.format(tanggal);
 
@@ -592,11 +611,11 @@ public class AllFunction extends AppCompatActivity {
     public static String getTime(String time) {
         Date tanggal = null;
         String dateConvert = null;
-        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.UK);
+        SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
         try {
             tanggal = form.parse(time);
-            DateFormat tf = new SimpleDateFormat("k:mm:ss ",Locale.UK);
+            DateFormat tf = new SimpleDateFormat("HH:mm:ss ", Locale.US);
             dateConvert = tf.format(tanggal);
 
         } catch (ParseException e) {
@@ -605,6 +624,18 @@ public class AllFunction extends AppCompatActivity {
         return dateConvert;
     }
 
+    public static String curentTime() {
+        String curentTime = null;
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time =&gt; " + c.getTime());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = df.format(c.getTime());
+        // Now formattedDate have current date/time
+        String getTime = AllFunction.getTime(formattedDate);
+        String getDate = AllFunction.getDate(formattedDate);
+        curentTime = getDate + " " + getTime;
+        return curentTime.trim();
+    }
 
     public static int reductionDate(String start, String end) {
         Date startDate = null;
@@ -638,14 +669,14 @@ public class AllFunction extends AppCompatActivity {
         return retBindingData.create(DataLink.class);
     }
 
-    public static void uploadSync(int rsnID, Context mContext) {
+    public static void uploadSync(int rsnState, Context mContext,int rsnID ) {
         UploadPlanData uploadPlanData = new UploadPlanData();
         uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(mContext, Preference.prefJobID));
         uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
         uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
         uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
         uploadPlanData.setVehicleID(AllFunction.getIntFromSharedPref(mContext, Preference.prefVehicleID));
-        uploadPlanData.setReasonState(AllFunction.getIntFromSharedPref(mContext, "getReasonId"));
+        uploadPlanData.setReasonState(rsnState);
         uploadPlanData.setReasonID(rsnID);
         uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
 
@@ -653,6 +684,26 @@ public class AllFunction extends AppCompatActivity {
         final Gson gson = new Gson();
         Log.d("Test", "getUploadData: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
 
-
+        AllUploadData allUploadData = AllUploadData.getInstance();
+        AllFunction.storeObjectToSharedPrefObj(mContext, allUploadData, Preference.prefAllUploadData);
     }
+
+    public void sendSmsByManager(String phoneNumber, String smsBody) {
+        try {
+            // Get the default instance of the SmsManager
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber.toString(),
+                    null,
+                    smsBody.toString(),
+                    null,
+                    null);
+            Toast.makeText(getApplicationContext(), "Your sms has successfully sent!",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(),"Your sms has failed...",
+                    Toast.LENGTH_LONG).show();
+            ex.printStackTrace();
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ import com.fz.fzapp.common.SyncData;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.UploadPlanData;
 import com.fz.fzapp.model.ReasonResponse;
+import com.fz.fzapp.pojo.TaskListPojo;
 import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.popup.ReasonStatus;
 import com.fz.fzapp.sending.UploadHolder;
@@ -32,6 +33,7 @@ import com.fz.fzapp.service.AllFunction;
 import com.fz.fzapp.service.DataLink;
 import com.fz.fzapp.service.UploadData;
 import com.fz.fzapp.utils.FixValue;
+import com.fz.fzapp.utils.PopupMessege;
 import com.fz.fzapp.utils.Preference;
 import com.fz.fzapp.utils.SaveToSQLite;
 import com.google.gson.Gson;
@@ -51,6 +53,7 @@ public class ReasonList_adapter extends BaseAdapter {
     private static Context mContext;
     static private List<ReasonResponse> reasonResponses;
     private static Integer intDuty;
+    private static PopupMessege popupMessege = new PopupMessege();
 
     public ReasonList_adapter(Activity mActivity, Context mContext, List<ReasonResponse> reasonResponses, Integer intDuty) {
         this.mContext = mContext;
@@ -83,7 +86,7 @@ public class ReasonList_adapter extends BaseAdapter {
 
         ViewHolder vhView = new ViewHolder(view);
         vhView.tvReasonName.setText(reasonResponses.get(i).getReasondesc());
-        vhView.tvReasonName.setTag(i);
+        vhView.tvReasonName.setTag(reasonResponses.get(i).getReasonid());
 
         return view;
     }
@@ -102,29 +105,19 @@ public class ReasonList_adapter extends BaseAdapter {
                 case R.id.rlDetailReason:
                 case R.id.tvReasonName:
                     Integer rsnId = (Integer) tvReasonName.getTag();
-//                    final String[] strReason = {""};
-//                    if (reasonResponses.get(idxView).getReasonname() == "Alasan Lain") {
-//                        ReasonStatus reasonStatus = new ReasonStatus(activity);
-//                        reasonStatus.show();
-//                        reasonStatus.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                            @Override
-//                            public void onDismiss(DialogInterface dialogInterface) {
-//                                strReason[0] = AllFunction.getStringFromSharedPref(mContext, Preference.prefOtherReason);
-//                            }
-//                        });
-//                    } else
-//                        strReason[0] = reasonResponses.get(idxView).getReasonname();
+                    TaskListPojo taskListPojo = new TaskListPojo();
+                    taskListPojo = AllFunction.getObjectFromSharedPrefObj(mContext, TaskListPojo.class, Preference.prefAllTaskList);
                     if (intDuty == 2) {
-                        //Succsess
+                        //Late
                         int countingArray = AllFunction.getIntFromSharedPref(mContext, "countingArray");
-                        if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
+                        if (taskListPojo.getTaskListResponse().size() == countingArray + 1) {
                             //Succsecc once job
-                            AllFunction.uploadSync(rsnId, mContext);
-                            UploadDataJob();
+                            AllFunction.uploadSync(2, mContext, rsnId);
+                            popupMessege.ShowMessegeUpload(mContext, activity);
 
                         } else {
                             //success half job
-                            AllFunction.uploadSync(rsnId, mContext);
+                            AllFunction.uploadSync(2, mContext, rsnId);
                             AllFunction.storeToSharedPrefCount(mContext, "countingArray", countingArray);
                             Intent planningIntent = new Intent(mContext, Planning.class);
                             mContext.startActivity(planningIntent);
@@ -132,21 +125,21 @@ public class ReasonList_adapter extends BaseAdapter {
                         }
                     } else {
                         //fail
-                        AllFunction.uploadSync(rsnId, mContext);
+                        AllFunction.uploadSync(1, mContext, rsnId);
                         Intent SyncIntent = new Intent(mContext, SyncData.class);
                         mContext.startActivity(SyncIntent);
                         activity.finish();
 
                     }
-//                    SaveToSQLite saveToSQLite = new SaveToSQLite(strReason[0], activity, mContext, intDuty);
-//                    saveToSQLite.ProcessToSQLite();
                     break;
             }
         }
 
         private void UploadDataJob() {
             final Gson gson = new Gson();
-            UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+            AllUploadData allUploadData = AllFunction.getObjectFromSharedPrefObj(mContext, AllUploadData.class, Preference.prefAllUploadData);
+//            UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+            UploadHolder uploadHolder = new UploadHolder(allUploadData.getUploadData(), 9000);
             Log.d("Test", "getUploadHolder : " + gson.toJson(uploadHolder));
 
             if (CheckConnection() == -1) return;
@@ -155,15 +148,14 @@ public class ReasonList_adapter extends BaseAdapter {
             ReceiveUpload.enqueue(new Callback<UploadPojo>() {
                 @Override
                 public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
-                    if (response.isSuccessful()) {
+                    if ((response.body().getCoreResponse().getCode() == FixValue.intSuccess)) {
                         String msg = response.body().getCoreResponse().getMsg();
                         Intent SyncIntent = new Intent(mContext, SyncData.class);
                         mContext.startActivity(SyncIntent);
                         onProcessSyncData();
                         activity.finish();
                     } else {
-                        setAllOff(mContext.getResources().getString(R.string.msgServerData));
-                        Toast.makeText(mContext, "Check Your Connection", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, response.body().getCoreResponse().getMsg(), Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -172,12 +164,12 @@ public class ReasonList_adapter extends BaseAdapter {
 
                 }
             });
-            String s;
         }
 
         private Integer CheckConnection() {
             if (AllFunction.isNetworkAvailable(mContext) == FixValue.TYPE_NONE) {
-                setAllOff(mContext.getResources().getString(R.string.msgServerResponse));
+                Toast.makeText(mContext, R.string.msgCheckConnection, Toast.LENGTH_LONG).show();
+//                setAllOff(mContext.getResources().getString(R.string.msgCheckConnection));
                 return -1;
             }
             return 0;
@@ -199,19 +191,4 @@ public class ReasonList_adapter extends BaseAdapter {
         new UploadData(activity, mContext, listSyncTable).execute();
     }
 
-
-//    public static void uploadSync(int rsnID) {
-//        UploadPlanData uploadPlanData = new UploadPlanData();
-//        uploadPlanData.setJobID(AllFunction.getIntFromSharedPref(mContext, Preference.prefJobID));
-//        uploadPlanData.setTaskID(AllFunction.getIntFromSharedPref(mContext, Preference.prefTaskID));
-//        uploadPlanData.setActualStart(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualStart));
-//        uploadPlanData.setActualEnd(AllFunction.getStringFromSharedPref(mContext, Preference.prefActualEnd));
-//        uploadPlanData.setReasonState(0);
-//        uploadPlanData.setReasonID(rsnID);
-//        uploadPlanData.setDoneStatus(AllFunction.getStringFromSharedPref(mContext, Preference.prefDoneStatus));
-//
-//        AllUploadData.getInstance().setDatanya(uploadPlanData);
-//        final Gson gson = new Gson();
-//        Log.d("Test", "onCreate: " + gson.toJson(AllUploadData.getInstance().getUploadData()));
-//    }
 }

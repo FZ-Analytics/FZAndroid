@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserResponse
 {
-
   @SerializedName("UserID")
   @Expose
   private Integer userID;
@@ -33,6 +32,9 @@ public class UserResponse
   @SerializedName("TimeTrackLocation")
   @Expose
   private Integer timeTrackLocation;
+  @SerializedName("MobileMenuID")
+  @Expose
+  private String mobileMenuID;
 
   public Integer getUserID() {
     return userID;
@@ -104,6 +106,14 @@ public class UserResponse
 
   public void setTimeTrackLocation(Integer timeTrackLocation) {
     this.timeTrackLocation = timeTrackLocation;
+  }
+
+  public String getMobileMenuID() {
+    return mobileMenuID;
+  }
+
+  public void setMobileMenuID(String mobileMenuID) {
+    this.mobileMenuID = mobileMenuID;
   }
 
 }

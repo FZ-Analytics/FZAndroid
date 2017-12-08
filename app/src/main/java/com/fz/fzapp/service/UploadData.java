@@ -108,13 +108,13 @@ public class UploadData extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String results) {
         super.onPostExecute(results);
-//
+//s
 //        progressDialog.dismiss();
 //        popupMessege.ShowMessege1(context, results);
 
-    Intent UploadIntent = new Intent(activity, SyncData.class);
-    context.startActivity(UploadIntent);
-    activity.finish();
+        Intent UploadIntent = new Intent(activity, SyncData.class);
+        context.startActivity(UploadIntent);
+        activity.finish();
     }
 
     private int TransferSynDataToServer(String TableName, Cursor cursor, Database_adapter adapter_database) {
@@ -126,8 +126,7 @@ public class UploadData extends AsyncTask<String, Void, String> {
         final int LocationID = cursor.getInt(0);
 
 
-        if(TableName.trim() == "tracking")
-        {
+        if (TableName.trim() == "tracking") {
             trackingTrx.setLocationID(LocationID);
             trackingTrx.setLatitude(cursor.getString(1));
             trackingTrx.setLongitude(cursor.getString(2));

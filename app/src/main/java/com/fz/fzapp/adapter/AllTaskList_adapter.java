@@ -13,28 +13,6 @@ import java.util.List;
 public class AllTaskList_adapter
 {
   private List<TaskListResponse> alltaskList;
-  private List<ReasonResponse> allresponsefail;
-  private List<ReasonResponse> allresponselate;
-
-  public List<ReasonResponse> getAllresponsefail()
-  {
-    return allresponsefail;
-  }
-
-  public void setAllresponsefail(List<ReasonResponse> allresponsefail)
-  {
-    this.allresponsefail = allresponsefail;
-  }
-
-  public List<ReasonResponse> getAllresponselate()
-  {
-    return allresponselate;
-  }
-
-  public void setAllresponselate(List<ReasonResponse> allresponselate)
-  {
-    this.allresponselate = allresponselate;
-  }
 
   public List<TaskListResponse> getAlltaskList()
   {

@@ -2,6 +2,7 @@ package com.fz.fzapp.common;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.fz.fzapp.adapter.Database_adapter;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.TrackingTrx;
 //import com.fz.fzapp.data.UploadRespone;
+import com.fz.fzapp.pojo.TaskListPojo;
 import com.fz.fzapp.pojo.UploadPojo;
 import com.fz.fzapp.sending.UploadHolder;
 import com.fz.fzapp.service.AllFunction;
@@ -38,6 +41,7 @@ import com.fz.fzapp.utils.DatabaseHandler;
 import com.fz.fzapp.utils.FixValue;
 import com.fz.fzapp.utils.PopupMessege;
 import com.fz.fzapp.utils.Preference;
+import com.fz.fzapp.utils.UploadDataToServer;
 import com.fz.fzapp.utils.uploadData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -89,8 +93,18 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     LinearLayout borderLayout2;
     @BindView(R.id.splitter)
     View splitter;
+    @BindView(R.id.dutyDivisi)
+    TextView dutyDivisi;
+    @BindView(R.id.dutyBlock)
+    TextView dutyBlock;
+    @BindView(R.id.DutyLokasi)
+    TextView DutyLokasi;
+    @BindView(R.id.dutyEmptyBinLocation)
+    TextView dutyEmptyBinLocation;
+    @BindView(R.id.llViewDetails)
+    LinearLayout llViewDetails;
 
-    private PopupMessege popupMessege = new PopupMessege();
+    private PopupMessege popupMessege =new PopupMessege();
 
     private Activity activity = this;
     static String TAG = "[DutyData]";
@@ -101,7 +115,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     private Integer onDuty = 3;
     private Integer onActivityJump = 1;
     ArrayList<uploadData> data;
-
+    private int lastActivity;
     private Database_adapter database_adapter;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -116,17 +130,22 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     int getReasonId;
     private Handler myHandler = new Handler();
     SimpleDateFormat form;
-
-
+    private TaskListPojo taskListPojo = new TaskListPojo();
+    @BindView(R.id.tvDivision)
+    TextView tvDivision;
+    UploadDataToServer uploadDataToServer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.duty_lay);
+        lastActivity = 2;
+        AllFunction.storeToSharedPref(context, lastActivity, Preference.prefLastActivity);
         ButterKnife.bind(this);
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        tf = new SimpleDateFormat("k:mm:ss", Locale.US);
-        form = new SimpleDateFormat("yyyy-mm-dd k:mm:ss", Locale.US);
+        tf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        form = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss", Locale.US);
 
+        taskListPojo = AllFunction.getObjectFromSharedPrefObj(context, TaskListPojo.class, Preference.prefAllTaskList);
         database_adapter = new Database_adapter(context);
         countingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
 //        GetLocation();
@@ -138,6 +157,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         }
 
         long TimeTrackLocation = AllFunction.getIntFromSharedPref(context, Preference.prefVTimeTrackLocation);
+//        long TimeTrackLocation = 10000;
         Log.d("waktu", String.valueOf(TimeTrackLocation));
         TimerToTrackLocation = new CountDownTimerToTrackLocation(TimeTrackLocation, 1000);
         TimerToTrackLocation.start();
@@ -150,7 +170,7 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
             try {
                 copyToExternal(fScr, fDest);
             } catch (IOException e) {
-                // e.printStackTrace();
+                // e.printStackTrace()
             }
         }
         RetriveContent();
@@ -158,20 +178,22 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     }
 
     private void RetriveContent() {
+
         calendar = Calendar.getInstance();
         String timeDutty = null;
 
         int CountingArray = AllFunction.getIntFromSharedPref(context, "countingArray");
         timeDutty = tf.format(calendar.getTime());
-        String timeEstimateDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd();
-        String StartDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getFrom();
-        String DestinationDutty = AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getTo();
+        AllFunction.storeToSharedPref(context, timeDutty, Preference.prefGetTime);
+        String timeEstimateDutty = taskListPojo.getTaskListResponse().get(CountingArray).getEnd();
+        String StartDutty = taskListPojo.getTaskListResponse().get(CountingArray).getFrom();
+        String DestinationDutty = taskListPojo.getTaskListResponse().get(CountingArray).getTo();
         String timeEnd = AllFunction.getTime(timeEstimateDutty);
-        AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualStart);
+        AllFunction.storeToSharedPref(context, AllFunction.curentTime(), Preference.prefActualStart);
 
         try {
             Date startTime = form.parse(form.format(calendar.getTime()));
-            Date endTime = form.parse(AllTaskList_adapter.getInstance().getAlltaskList().get(CountingArray).getEnd());
+            Date endTime = form.parse(timeEstimateDutty);
             diff = endTime.getTime() - startTime.getTime();
             if (diff < 0) {
                 countingUpTimer(diff);
@@ -179,13 +201,19 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 countingDownTimer(diff);
             }
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        tvDivision.setText(AllFunction.getStringFromSharedPref(context, Preference.prefTruckName));
         tvStartDutty.setText(StartDutty);
         tvDestinationDutty.setText(DestinationDutty);
-        tvTimeActualDutty.setText(timeDutty);
+        tvTimeActualDutty.setText(AllFunction.getStringFromSharedPref(context, Preference.prefGetTime));
         tvtimeEstimateDutty.setText(timeEnd);
+        dutyDivisi.setText(taskListPojo.getTaskListResponse().get(CountingArray).getDivID());
+        dutyBlock.setText(taskListPojo.getTaskListResponse().get(CountingArray).getBlocks());
+        DutyLokasi.setText(taskListPojo.getTaskListResponse().get(CountingArray).getBinLocation());
+        dutyEmptyBinLocation.setText(taskListPojo.getTaskListResponse().get(CountingArray).getBinEmpty());
     }
 
     private void countingDownTimer(long diff) {
@@ -210,9 +238,9 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         onDuty = 2;
         diff = absDif;
         ivGo.setImageResource(R.drawable.circle_red);
-//        frontDutty.setBackgroundResource(R.color.red);
         borderLayout1.setBackgroundResource(R.drawable.border_red);
         borderLayout2.setBackgroundResource(R.drawable.border_red);
+        llViewDetails.setBackgroundResource(R.drawable.border_red);
         tvTimer.setTextColor(context.getResources().getColor(R.color.red));
         splitter.setBackgroundResource(R.color.red);
         startTimes = SystemClock.uptimeMillis();
@@ -244,61 +272,118 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnDutyFails:
-                getReasonId = 1;
-//                UploadFinishJob();
-                AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
-                //Keluar dari job
-                AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
-                onDuty = 1;
-                Intent ReasonIntent = new Intent(Duty.this, Reason.class);
-                ReasonIntent.putExtra("onDuty", onDuty);
-                ReasonIntent.putExtra("onActivityJump", onActivityJump);
-                startActivity(ReasonIntent);
-                TimerToTrackLocation.cancel();
-                finish();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder
+                        .setTitle(R.string.titleMessege)
+                        .setMessage(R.string.PopupMessage)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.strBtnOK, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                onClickBtnDutyFails();
+                            }
+                        })
+                        .setNegativeButton(R.string.strBtnCancel2, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
                 break;
             case R.id.btnDutyDone:
-                AllFunction.storeToSharedPref(context, curentTime(), Preference.prefActualEnd);
-                if (onDuty != 2) {
-
-                    getReasonId = 0;
-                    //Telat
-                    if (AllTaskList_adapter.getInstance().getAlltaskList().size() == countingArray + 1) {
-                        AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
-                        //Success and once job
-                        AllFunction.uploadSync(0, context);
-                        TimerToTrackLocation.cancel();
-                        UploadFinishJob();
-
-                    } else {
-                        //Succses and half job
-                        AllFunction.uploadSync(0, context);
-                        AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
-                        Intent planningIntent = new Intent(Duty.this, Planning.class);
-                        startActivity(planningIntent);
-                        TimerToTrackLocation.cancel();
-                        finish();
-                    }
-                } else {
-                    getReasonId = 2;
-                    AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
-                    //Late
-                    AllFunction.getIntFromSharedPref(context, Preference.prefJobID);
-                    Intent ReasonIntents = new Intent(Duty.this, Reason.class);
-                    ReasonIntents.putExtra("onActivityJump", onActivityJump);
-                    ReasonIntents.putExtra("onDuty", onDuty);
-                    startActivity(ReasonIntents);
-                    TimerToTrackLocation.cancel()
-                    ;
-                    finish();
-                }
+                onClickBtnDutyDone();
+//
+//                AlertDialog.Builder builders = new AlertDialog.Builder(context);
+//                builders
+//                        .setTitle(R.string.titleMessege)
+//                        .setMessage(R.string.PopupMessage)
+//                        .setIcon(android.R.drawable.ic_dialog_alert)
+//                        .setCancelable(false)
+//                        .setPositiveButton(R.string.strBtnOK, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                onClickBtnDutyDone();
+//                            }
+//                        })
+//                        .setNegativeButton(R.string.strBtnCancel2, new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                            }
+//                        });
+//
+//                AlertDialog alerts = builders.create();
+//                alerts.show();
                 break;
         }
     }
 
+    private void onClickBtnDutyFails() {
+        TimerToTrackLocation.cancel();
+        getReasonId = 1;
+        //UploadFinishJob();
+        AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
+        //Keluar dari job
+        AllFunction.storeToSharedPref(context, AllFunction.curentTime(), Preference.prefActualEnd);
+        onDuty = 1;
+        Intent ReasonIntent = new Intent(Duty.this, Reason.class);
+        ReasonIntent.putExtra("onDuty", onDuty);
+        ReasonIntent.putExtra("onActivityJump", onActivityJump);
+        startActivity(ReasonIntent);
+        finish();
+    }
+
+    private void onClickBtnDutyDone() {
+        AllFunction.storeToSharedPref(context, AllFunction.curentTime(), Preference.prefActualEnd);
+        if (onDuty != 2) {
+            getReasonId = 0;
+            //Late
+            if (taskListPojo.getTaskListResponse().size() == countingArray + 1) {
+                AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
+                //Success and one job
+                AllFunction.uploadSync(0, context, 0);
+                TimerToTrackLocation.cancel();
+                CheckMetodeUpload();
+                popupMessege.ShowMessegeUpload(context,activity);
+
+//                UploadFinishJob();
+
+
+            } else {
+                //Succses and half job
+                AllFunction.uploadSync(0, context, 0);
+                AllFunction.storeToSharedPrefCount(context, "countingArray", countingArray);
+                Intent planningIntent = new Intent(Duty.this, Planning.class);
+                startActivity(planningIntent);
+                TimerToTrackLocation.cancel();
+                finish();
+            }
+        } else {
+            //Late
+            getReasonId = 2;
+            AllFunction.storeToSharedPref(context, getReasonId, "getReasonId");
+            AllFunction.getIntFromSharedPref(context, Preference.prefJobID);
+            Intent ReasonIntents = new Intent(Duty.this, Reason.class);
+            ReasonIntents.putExtra("onActivityJump", onActivityJump);
+            ReasonIntents.putExtra("onDuty", onDuty);
+            startActivity(ReasonIntents);
+            TimerToTrackLocation.cancel();
+            finish();
+        }
+    }
+
+    private void CheckMetodeUpload() {
+        signalStreght();
+    }
+
+    private void signalStreght() {
+    }
+
+
     public void UploadFinishJob() {
         final Gson gson = new Gson();
-        UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData());
+        UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData(),9000);
         Log.d("Test", "getUploadHolder: " + gson.toJson(uploadHolder));
 
         if (CheckConnection() == -1) return;
@@ -307,21 +392,17 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         ReceiveUpload.enqueue(new Callback<UploadPojo>() {
             @Override
             public void onResponse(Call<UploadPojo> call, Response<UploadPojo> response) {
-                if (response.isSuccessful()) {
+                if (response.body().getCoreResponse().getCode() == FixValue.intSuccess) {
                     Log.d("UploadTask", String.valueOf(response));
-                    Intent SyncIntent = new Intent(context, SyncData.class);
-                    context.startActivity(SyncIntent);
                     onProcessSyncData();
-                    activity.finish();
                 } else {
-                    Toast.makeText(context, "Check Your Connection", Toast.LENGTH_LONG).show();
-//                    setAllOff(context.getResources().getString(R.string.msgServerData));
+                    Toast.makeText(context, response.body().getCoreResponse().getMsg(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UploadPojo> call, Throwable t) {
-
+                Toast.makeText(context, R.string.msgServerFailure, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -331,34 +412,27 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
         listSyncTable.clear();
         listSyncTable.put("tracking", "tracking");
         new UploadData(activity, context, listSyncTable).execute();
+        intentToSync();
+    }
+
+    private void intentToSync() {
+        Intent SyncIntent = new Intent(context, SyncData.class);
+        context.startActivity(SyncIntent);
+        activity.finish();
     }
 
     private Integer CheckConnection() {
         if (AllFunction.isNetworkAvailable(context) == FixValue.TYPE_NONE) {
-            setAllOff(context.getResources().getString(R.string.msgServerResponse));
+            Toast.makeText(context, R.string.msgCheckConnection, Toast.LENGTH_LONG).show();
             return -1;
         }
         return 0;
     }
 
     private void setAllOff(String strMsg) {
-////            tvMsg.setText(context.getResources().getString(R.string.titleKlik));
-//            ivGo.setBackgroundResource(R.drawable.buttonthick);
         popupMessege.ShowMessege1(context, strMsg);
     }
 
-    private String curentTime() {
-        String curentTime = null;
-        Calendar c = Calendar.getInstance();
-        System.out.println("Current time =&gt; " + c.getTime());
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = df.format(c.getTime());
-        // Now formattedDate have current date/time
-        String getTime = AllFunction.getTime(formattedDate);
-        String getDate = AllFunction.getDate(formattedDate);
-        curentTime = getDate + " " + getTime;
-        return curentTime;
-    }
 
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -416,44 +490,21 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
 //                        null, null, null);
 //            }
         }
+
     }
 
-//    private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
-//        DatabaseHandler db = new DatabaseHandler(this);
-//        String strEndTime = curentTime();
-//        int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
-//        int vehicleId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
-//        int statTracking = 0;
-//        Log.d("Insert: ", "Inserting ..");
-//        db.addTracking(new TrackingTrx( Latitude, Longitude, strEndTime, userId, vehicleId, statTracking));
-//        Log.d("Woi", Latitude+" * "+Longitude+" * "+userId+" * "+vehicleId+" * "+strEndTime);
-//
-//        // Reading all contacts
-//        Log.d("Reading: ", "Reading all contacts..");
-//        List<TrackingTrx> trackingList = db.getAllContacts();
-//        for (TrackingTrx trackingData : trackingList) {
-//            String log =  "Latitude: " + trackingData.getLatitude() + " ,Longtitude: " + trackingData.getLongitude() + " ,EndTime: "
-//                    + trackingData.getEndDate() + "UserId: " + trackingData.getUserID() + "vehicle id: " + trackingData.getVehicleID()
-//                    + trackingData.getEndDate() + "status: " + trackingData.getStatus();
-//            // Writing Contacts to log
-//            Log.d("Log: ", log);
-//            Log.d("Counting : ", String.valueOf(countId));
-//
-//            Toast.makeText(context,log,Toast.LENGTH_LONG);
-//
-//        }
-//    }
-
     private void SaveTrackToSQLite(String Latitude, String Longitude, String Date, String Time, Integer intConnect) {
-        String strEndTime = curentTime();
+        String strEndTime = AllFunction.curentTime();
         int userId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
         int vehicleId = AllFunction.getIntFromSharedPref(context, Preference.prefUserID);
 
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.clear();
-
+//        Toast.makeText(context, Latitude + " * " + Longitude + " * " + userId + " * " + vehicleId + " * " + strEndTime, Toast.LENGTH_LONG).show();
         Log.d("Woi", Latitude + " * " + Longitude + " * " + userId + " * " + vehicleId + " * " + strEndTime);
+        Log.d("test", "Heruuuuuuuuuuuuuu");
+
         hashMap.put("Latitude", Latitude);
         hashMap.put("Longitude", Longitude);
         hashMap.put("EndDate", strEndTime);
