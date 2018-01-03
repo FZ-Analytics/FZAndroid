@@ -3,14 +3,11 @@ package com.fz.fzapp.common;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import com.fz.fzapp.Krani.Main_Krani;
+import com.fz.fzapp.Smart_Fit.Main_Krani;
 import com.fz.fzapp.R;
 import com.fz.fzapp.adapter.AllReason_adapter;
 import com.fz.fzapp.adapter.Database_adapter;
@@ -172,7 +169,6 @@ public class Password extends AppCompatActivity {
                         AllFunction.storeToSharedPref(context, response.body().getUserResponse().getVehicleID(), Preference.prefVehicleID);
                         AllFunction.storeToSharedPref(context, response.body().getUserResponse().getTimeTrackLocation(), Preference.prefVTimeTrackLocation);
                         AllFunction.storeToSharedPref(context, response.body().getUserResponse().getMobileMenuID(), Preference.prefMobileMenuID);
-
                         ProcessReasonFail();
 
                     }
@@ -229,11 +225,6 @@ public class Password extends AppCompatActivity {
                     else {
                         List<ReasonResponse> gsonFail = response.body().getReasonResponse();
                         storeToReason(gsonFail, Preference.prefFail, 0);
-
-
-//                        AllFunction.storeToSharedPref(context,gson,Preference.prefFail);
-//                        Log.d("Balikan Fail", String.valueOf(gson));
-//                        AllReason_adapter.getInstance().setAllresponsefail(response.body().getReasonResponse());
                         ProcessReasonLate();
                     }
                 } else
@@ -271,12 +262,7 @@ public class Password extends AppCompatActivity {
 
 //                        AllFunction.storeToSharedPref(context, gson, Preference.prefFail);
 //                        AllReason_adapter.getInstance().setAllresponselate(response.body().getReasonResponse());
-//                        Intent PasswordIntent = new Intent(Password.this, Main_Krani.class);
-
-                        Intent PasswordIntent = new Intent(Password.this, SyncData.class);
-                        startActivity(PasswordIntent);
-                        finish();
-
+                        IntentCondition();
 
                     }
                 } else
@@ -288,6 +274,19 @@ public class Password extends AppCompatActivity {
                 setAllOff(context.getResources().getString(R.string.msgServerData));
             }
         });
+    }
+
+    private void IntentCondition() {
+        Intent PasswordIntent;
+//        if (Preference.prefRoleID.equals("1")) {
+//            PasswordIntent = new Intent(Password.this, SyncData.class);
+//        } else {
+//            PasswordIntent = new Intent(Password.this, Main_Krani.class);
+//        }
+        PasswordIntent = new Intent(Password.this, SyncData.class);
+
+        startActivity(PasswordIntent);
+        finish();
     }
 
     private void storeToReason(List<ReasonResponse> gsonFail, String key, int mode) {

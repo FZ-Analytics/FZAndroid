@@ -201,7 +201,7 @@ public class PopupMessege extends Activity {
                 final String userInputKg = userInput.getText().toString().trim();
 
                 if (userInputKg.trim().isEmpty()) {
-                    Toast.makeText(context, "Isi data KG terlebih dahulu", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, getResources().getString(R.string.input_tonase), Toast.LENGTH_LONG).show();
                 } else {
                     final int userInputInt = Integer.parseInt(userInputKg);
                     UploadHolder uploadHolder = new UploadHolder(AllUploadData.getInstance().getUploadData(), userInputInt);

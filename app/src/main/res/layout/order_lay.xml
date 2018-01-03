@@ -9,40 +9,32 @@
     tools:context="com.fz.fzapp.common.SyncData">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarOrder"
+        android:id="@+id/toolbarJobEntry"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/Height_Toolbar"></android.support.v7.widget.Toolbar>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/btnorange">
 
-    <View
-        android:id="@+id/splitter"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:layout_below="@+id/toolbarOrder"
-        android:layout_marginTop="8dp"
-        android:background="@color/gray" />
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/rlJobOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/btnAdd"
+        android:layout_alignRight="@+id/btnAdd"
+        android:layout_below="@+id/toolbarJobEntry"
+        android:orientation="vertical">
 
-        android:orientation="vertical"
-        android:layout_below="@+id/splitter"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/orderTittel" />
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/orderTittel" />-->
 
         //Estate
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_form"
             android:layout_marginTop="@dimen/padding_5"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -50,20 +42,23 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/Estate"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etEstate"
+                style="@style/EditTextForm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2" />
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_form"
             android:layout_marginTop="@dimen/padding_5"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -71,20 +66,23 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/orderBetween"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etBeteween"
+                style="@style/EditTextForm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2" />
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_form"
             android:layout_marginTop="@dimen/padding_5"
 
             android:orientation="horizontal"
@@ -93,15 +91,18 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/andBlock"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etAndBlock"
+                style="@style/EditTextForm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2" />
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form" />
         </LinearLayout>
 
         <LinearLayout
@@ -114,22 +115,24 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
+
                 android:text="@string/directionLocation"
                 android:textSize="14sp" />
 
             <RelativeLayout
                 android:id="@+id/llJenisBarang"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:layout_weight="1.2"
-                android:background="@drawable/border_spinner"
+                android:layout_height="@dimen/height_form"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form"
                 android:orientation="horizontal">
 
 
                 <Spinner
                     android:id="@+id/spDirectionLocation"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
@@ -163,47 +166,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_5"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="@string/binReady"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/etBinReady"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8" />
-
-            <RelativeLayout
-                android:id="@+id/rlSetTime"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/padding_24"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="@dimen/padding_5"
-                android:layout_weight="1"
-                android:layout_gravity="bottom"
-                android:background="@color/btnorange">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:textSize="12sp"
-                    android:text="SetTime"
-                    android:textColor="@color/WhiteTrans"/>
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_form"
             android:layout_marginTop="@dimen/padding_5"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -211,20 +174,75 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
+                android:text="@string/binReady"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:weightSum="2">
+
+                <EditText
+                    android:id="@+id/etBinReady"
+                    style="@style/EditTextForm"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.1"
+                    android:background="@drawable/edit_text_form" />
+
+                <RelativeLayout
+                    android:id="@+id/rlSetTime"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="@dimen/padding_5"
+                    android:layout_weight="0.9"
+                    android:background="@color/btnorange">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="SetTime"
+                        android:textColor="@color/WhiteTrans"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_form"
+            android:layout_marginTop="@dimen/padding_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/estimateTon"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etEstimateTon"
+                style="@style/EditTextForm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2" />
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/height_form"
             android:layout_marginTop="@dimen/padding_5"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -232,15 +250,18 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/remark"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etRemarks"
+                style="@style/EditTextForm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2" />
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form" />
         </LinearLayout>
 
         <LinearLayout
@@ -252,7 +273,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.7"
                 android:text="@string/last2order"
                 android:textSize="14sp" />
 
@@ -262,8 +284,8 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="@dimen/padding_5"
 
-                android:layout_weight="1.2"
-                android:background="@drawable/border_spinner"
+                android:layout_weight="1.3"
+                android:background="@drawable/edit_text_form"
                 android:orientation="horizontal">
 
 

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarEstimationEntry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/btnorange">
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarEstimationEntry"
+        android:layout_marginLeft="@dimen/paddingmenu"
+        android:layout_marginRight="@dimen/paddingmenu"
+        android:layout_marginTop="@dimen/paddingmenu">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/etDateHarvest"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_36"
+                android:layout_marginBottom="5dp"
+                android:hint="Harvest Date"
+                android:textSize="@dimen/fontSize" />
+
+            <EditText
+                android:id="@+id/etDivision"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_36"
+                android:layout_marginBottom="5dp"
+                android:hint="Estate + Division"
+                android:textSize="@dimen/fontSize" />
+
+            <EditText
+                android:id="@+id/etRemark"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_36"
+                android:layout_below="@+id/etDivision"
+                android:layout_marginBottom="5dp"
+                android:hint="Remark / 1st empty bin location"
+                android:textSize="@dimen/fontSize" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_18"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Type"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Block"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Estimation Kg"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvAddEstimationEntry"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <RelativeLayout
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_5"
+                android:layout_marginTop="@dimen/padding_14"
+                android:layout_gravity="right"
+                android:background="@drawable/border_spinner"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="Add"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -17,9 +17,12 @@ package com.fz.fzapp.service;
 
 import com.fz.fzapp.pojo.LoginPojo;
 import com.fz.fzapp.pojo.LogoutPojo;
+import com.fz.fzapp.pojo.OrderPojo;
 import com.fz.fzapp.pojo.ReasonPojo;
 import com.fz.fzapp.pojo.TaskListPojo;
 import com.fz.fzapp.pojo.UploadPojo;
+import com.fz.fzapp.pojo.mobileMenuPojo;
+import com.fz.fzapp.sending.JobEntryHolder;
 import com.fz.fzapp.sending.LogoutHolder;
 import com.fz.fzapp.sending.ReasonHolder;
 import com.fz.fzapp.sending.SyncTrxHolder;
@@ -29,7 +32,12 @@ import com.fz.fzapp.sending.UserHolder;
 import com.fz.fzapp.utils.FixValue;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Dibuat oleh : ignat
@@ -64,5 +72,14 @@ public interface DataLink
 
   @POST(FixValue.RestfulLogout)
   Call<LogoutPojo> TrackingData(@Body LogoutHolder logoutHolder);
+
+  @GET("users/menu/{id}")
+  Call<mobileMenuPojo> mainMenuKrani(@Path("id") String menuid);
+
+  @GET(FixValue.RestfulSpinnerjobEntry)
+  Call<OrderPojo> listSpinnerJobOrder();
+
+  @POST(FixValue.RestfulJobEntry)
+  Call<LoginPojo> uploadJobEntry(@Body JobEntryHolder jobEntryHolder);
 }
 

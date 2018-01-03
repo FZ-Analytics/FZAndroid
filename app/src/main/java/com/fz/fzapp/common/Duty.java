@@ -345,9 +345,9 @@ public class Duty extends AppCompatActivity implements GoogleApiClient.Connectio
                 AllFunction.uploadSync(0, context, 0);
                 TimerToTrackLocation.cancel();
                 CheckMetodeUpload();
-                popupMessege.ShowMessegeUpload(context,activity);
+//                popupMessege.ShowMessegeUpload(context,activity);
 
-//                UploadFinishJob();
+                UploadFinishJob();
 
 
             } else {

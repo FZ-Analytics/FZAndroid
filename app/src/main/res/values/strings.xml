@@ -123,15 +123,17 @@
 
 //Order
     <string name="orderTittel">Please input your order Job</string>
-    <string name="Estate">Estate + Division</string>
-    <string name="orderBetween">Between Block</string>
-    <string name="andBlock">And Block</string>
-    <string name="directionLocation">Direction Location</string>
-    <string name="binReady">Bin Ready Estimate</string>
-    <string name="estimateTon">Estimate KG</string>
-    <string name="remark">Bin Posotion/Remark</string>
-    <string name="last2order">Last 2 Order</string>
-    <string name="input_tonase">Masukan berat buah yang anda angkut:</string>
+    <string name="Estate">Estate + Division :</string>
+    <string name="orderBetween">Between Block :</string>
+    <string name="andBlock">And Block :</string>
+    <string name="directionLocation">Direction Location :</string>
+    <string name="binReady">Bin Ready Estimate :</string>
+    <string name="estimateTon">Estimate KG :</string>
+    <string name="remark">Bin Posotion :</string>
+    <string name="last2order">Last 2 Order :</string>
+    <!--<string name="input_tonase">Masukan berat buah yang anda angkut:</string>-->
+    <string name="input_tonase">Isi Berat buah dari Timbangan </string>
+    <string name="cek_inputan">Maaf, periksa kembali inputan Anda</string>
 
 
 

@@ -113,8 +113,8 @@ public class ReasonList_adapter extends BaseAdapter {
                         if (taskListPojo.getTaskListResponse().size() == countingArray + 1) {
                             //Succsecc once job
                             AllFunction.uploadSync(2, mContext, rsnId);
-                            popupMessege.ShowMessegeUpload(mContext, activity);
-
+//                            popupMessege.ShowMessegeUpload(mContext, activity);
+                            UploadDataJob();
                         } else {
                             //success half job
                             AllFunction.uploadSync(2, mContext, rsnId);

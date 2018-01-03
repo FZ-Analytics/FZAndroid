@@ -29,6 +29,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+
     <style name="DefaultEditText" parent="DefaultUtils2">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
@@ -36,6 +37,11 @@
         <item name="android:maxLines">1</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
+    </style>
+
+    <style name="EditTextForm" parent="android:Widget.EditText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gray</item>
     </style>
 
     <style name="DefaultButton" parent="DefaultUtils1">

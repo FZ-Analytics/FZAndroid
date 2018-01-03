@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.fz.fzapp.Smart_Fit.Main_Krani;
 import com.fz.fzapp.R;
 import com.fz.fzapp.data.AllUploadData;
 import com.fz.fzapp.data.User;
@@ -51,9 +52,13 @@ public class Splash extends AppCompatActivity {
                 } else {
                     //initiaion
                     AllUploadData.initUser();
-                    if (AllFunction.getIntFromSharedPref(context, Preference.prefLastActivity) == 0) {
+                    if (AllFunction.getIntFromSharedPref(context, Preference.prefLastActivity) == 0 && AllFunction.getIntFromSharedPref(context, Preference.prefRoleID) == 1) {
                         Intent mainIntent = new Intent(Splash.this, SyncData.class);
                         startActivity(mainIntent);
+                        finish();
+                    } else if (AllFunction.getIntFromSharedPref(context, Preference.prefLastActivity) == 0 && AllFunction.getIntFromSharedPref(context, Preference.prefRoleID) != 1) {
+                        Intent SmartIntent = new Intent(Splash.this, Main_Krani.class);
+                        startActivity(SmartIntent);
                         finish();
                     } else if (AllFunction.getIntFromSharedPref(context, Preference.prefLastActivity) == 1) {
                         Intent mainIntent = new Intent(Splash.this, Planning.class);

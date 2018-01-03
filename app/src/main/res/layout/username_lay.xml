@@ -30,6 +30,7 @@
     <EditText
         android:id="@+id/etUsernameLogin"
         style="@style/DefaultEditText"
+        android:text="kranibine1"
         android:layout_alignEnd="@+id/splitter"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

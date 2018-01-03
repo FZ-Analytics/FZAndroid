@@ -53,7 +53,16 @@
             android:name=".common.Recap"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".Krani.Main_Krani"
+            android:name=".Smart_Fit.Main_Krani"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Smart_Fit.Job_Entry"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Smart_Fit.Estimation_Entry"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Smart_Fit.webView_Smart_Fit"
             android:screenOrientation="portrait"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
